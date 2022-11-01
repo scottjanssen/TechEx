@@ -9,7 +9,8 @@ app.use(require("./routes/record"));
 app.use(require("./routes/user"));
 // get driver connection
 const dbo = require("./db/conn");
- 
+const fetchH  = require("node-fetch");
+
 app.listen(port, () => {
   // perform a database connection when server starts
   dbo.connectToServer(function (err) {
