@@ -26,8 +26,19 @@ code {
 }
 
 .container {
-  margin-top: 60px;
-  margin-bottom: 30px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 40px;
+}
+
+.header {
+  justify-content: space-between;
 }
 
 .title {
@@ -35,4 +46,3 @@ code {
   font-weight: bold;
   letter-spacing: 20px;
 }
-
