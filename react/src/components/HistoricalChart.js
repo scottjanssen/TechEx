@@ -1,6 +1,8 @@
 import { useRef, useState, useEffect } from 'react'
 import * as d3 from 'd3'
 
+import RangeOption from './RangeOption'
+
 const HistoricalChart = ({ base, target, allData, dimensions }) => {
   const ref = useRef(null)
 
@@ -10,28 +12,12 @@ const HistoricalChart = ({ base, target, allData, dimensions }) => {
   useEffect(() => {
     let start = new Date()
 
-    switch (range) {
-      case '1M':
-        start = new Date(start.getFullYear(), start.getMonth() - 1, start.getDate())
-        break;
-      case '3M':
-        start = new Date(start.getFullYear(), start.getMonth() - 3, start.getDate())
-        break;
-      case '6M':
-        start = new Date(start.getFullYear(), start.getMonth() - 6, start.getDate())
-        break;
-      case '1Y':
-        start = new Date(start.getFullYear() - 1, start.getMonth(), start.getDate())
-        break;
-      case '2Y':
-        start = new Date(start.getFullYear() - 2, start.getMonth(), start.getDate())
-        break;
-      case '5Y':
-        start = new Date(start.getFullYear() - 5, start.getMonth(), start.getDate())
-        break;
-      case 'MX':
-        start = new Date('1970-01-01')
-        break;
+    if (range[1] === 'M') {
+      start = new Date(start.getFullYear(), start.getMonth() - parseInt(range[0]), start.getDate())
+    } else if (range[1] === 'Y') {
+      start = new Date(start.getFullYear() - parseInt(range[0]), start.getMonth(), start.getDate())
+    } else {
+      start = new Date(1970, 1, 1)
     }
 
     setData(() => {
@@ -123,8 +109,10 @@ const HistoricalChart = ({ base, target, allData, dimensions }) => {
         return i % Math.ceil(data.length / width * 70) === 0
         })
         .map(d => d.date))
-    if (range.includes('M')) {
+    if (range[1] === 'M') {
       xAxis.tickFormat(d3.timeFormat('%d %b'))
+    } else if (range[1] === 'Y') {
+      xAxis.tickFormat(d3.timeFormat('%b \'%y'))
     } else {
       xAxis.tickFormat(d3.timeFormat('%b \'%y'))
     }
@@ -146,28 +134,14 @@ const HistoricalChart = ({ base, target, allData, dimensions }) => {
   return (
     <>
       <svg id='historical-chart' ref={ ref }></svg>
-      <div className='row' style={ { flexWrap: 'wrap' } }>
-        <button className={ 'rangeOption' + (range === 'MX' ? ' current' : '') } onClick={ handleRangeOptionClick }>
-          MX
-        </button>
-        <button className={ 'rangeOption' + (range === '5Y' ? ' current' : '') } onClick={ handleRangeOptionClick }>
-          5Y
-        </button>
-        <button className={ 'rangeOption' + (range === '2Y' ? ' current' : '') } onClick={ handleRangeOptionClick }>
-          2Y
-        </button>
-        <button className={ 'rangeOption' + (range === '1Y' ? ' current' : '') } onClick={ handleRangeOptionClick }>
-          1Y
-        </button>
-        <button className={ 'rangeOption' + (range === '6M' ? ' current' : '') } onClick={ handleRangeOptionClick }>
-          6M
-        </button>
-        <button className={ 'rangeOption' + (range === '3M' ? ' current' : '') } onClick={ handleRangeOptionClick }>
-          3M
-        </button>
-        <button className={ 'rangeOption' + (range === '1M' ? ' current' : '') } onClick={ handleRangeOptionClick }>
-          1M
-        </button>
+      <div className='row' style={ { marginLeft: '50px', flexWrap: 'wrap' } }>
+        <RangeOption range={ range } option='MX' handleOptionClick={ handleRangeOptionClick } />
+        <RangeOption range={ range } option='5Y' handleOptionClick={ handleRangeOptionClick } />
+        <RangeOption range={ range } option='1Y' handleOptionClick={ handleRangeOptionClick } />
+        <RangeOption range={ range } option='6M' handleOptionClick={ handleRangeOptionClick } />
+        <RangeOption range={ range } option='3M' handleOptionClick={ handleRangeOptionClick } />
+        <RangeOption range={ range } option='2M' handleOptionClick={ handleRangeOptionClick } />
+        <RangeOption range={ range } option='1M' handleOptionClick={ handleRangeOptionClick } />
       </div>
     </>
   )
