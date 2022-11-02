@@ -163,7 +163,7 @@ const HistoricalChart = ({ base, target, histData, predData, dimensions }) => {
                 .attr('x2', x(d.date))
                 .attr('y2', y(d.rate))
                 .transition()
-                .duration(500)
+                .duration(300)
                 .attr('y2', height)
               
               focusLines.append('line')
@@ -173,7 +173,7 @@ const HistoricalChart = ({ base, target, histData, predData, dimensions }) => {
                 .attr('x2', x(d.date))
                 .attr('y2', y(d.rate))
                 .transition()
-                .duration(500)
+                .duration(300)
                 .attr('x2', 0)
 
               // SHOW TOOLTIP
