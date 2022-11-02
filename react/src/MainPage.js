@@ -51,7 +51,7 @@ const MainPage = () => {
     <>
       <div className='container'>
         <p style={ { textAlign: 'right' } }>
-          Welcome to <strong>TechEX</strong>, your go-to currency exchange website.
+          USD to EUR
         </p>
       </div>
       <div className='container'>
