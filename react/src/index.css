@@ -22,8 +22,8 @@ code {
 }
 
 #root {
-  margin-left: 200px;
-  margin-right: 200px;
+  margin-left: 12%;
+  margin-right: 12%;
 }
 
 .container {
@@ -66,4 +66,38 @@ circle {
 
 .tick text {
   font-size: 10pt;
+}
+
+@media screen and (max-width: 1024px) {
+  #root {
+    margin-left: 8%;
+    margin-right: 8%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  #root {
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+
+  body {
+    font-size: 12pt;
+  }
+
+  .title {
+    font-size: 40px;
+    letter-spacing: 12px;
+  }
+
+  .row {
+    gap: 20px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .tick text {
+    font-size: 8pt;
+    letter-spacing: -0.2pt;
+  }
 }
