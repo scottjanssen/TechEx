@@ -38,7 +38,7 @@ code {
   gap: 40px;
 }
 
-.header {
+.stretch-row {
   justify-content: space-between;
 }
 
@@ -89,6 +89,34 @@ circle {
 }
 
 .rangeOption.current {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  font-weight: bold;
+  padding: 0px;
+  transition-duration: 200ms;
+}
+
+.predictButton {
+  background-color: var(--primary-color);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border-color: var(--secondary-color);
+  border-style: solid;
+  color: var(--text-color);
+  cursor: pointer;
+  transition-duration: 300ms;
+}
+
+.predictButton:hover:not(.current) {
+  background-color: var(--primary-color);
+  color: var(--primary-color);
+  filter: brightness(150%);
+  font-weight: bold;
+  transition-duration: 400ms;
+}
+
+.predictButton.current {
   background-color: var(--secondary-color);
   color: var(--primary-color);
   font-weight: bold;

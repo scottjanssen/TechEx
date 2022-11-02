@@ -1,13 +1,15 @@
 import { useRef, useState, useEffect } from 'react'
 import * as d3 from 'd3'
 
-import RangeOption from './RangeOption'
+import { RangeOption, PredictButton } from './Buttons'
 
-const HistoricalChart = ({ base, target, allData, dimensions }) => {
+const HistoricalChart = ({ base, target, histData, predData, dimensions }) => {
   const ref = useRef(null)
 
   const [range, setRange] = useState('3M')
   const [data, setData] = useState('')
+
+  const [predict, setPredict] = useState(false)
 
   useEffect(() => {
     let start = new Date()
@@ -21,21 +23,25 @@ const HistoricalChart = ({ base, target, allData, dimensions }) => {
     }
 
     setData(() => {
-      return allData.map((d) => {
-        var [YYYY, MM, DD] = d.date.split('-')
+      return histData.concat(predict ? predData : [])
+        .map((d) => {
+          var [YYYY, MM, DD] = d.date.split('-')
 
-        return {
-          date: new Date(YYYY, MM - 1, DD),
-          rate: +d.rate
-        }
-      }).filter(d => d.date >= start)
+          return {
+            date: new Date(YYYY, MM - 1, DD),
+            rate: +d.rate
+          }})
+        .filter(d => d.date >= start)
     })
-  }, [range, allData])
+  }, [range, histData, predict, predData])
 
   useEffect(() => {
     if (!Array.isArray(data)) {
       return
     }
+
+    var today = new Date()
+    today = new Date(today.getFullYear(), today.getMonth(), today.getDate())
 
     // MARGIN CONVENTION
     const totalWidth = dimensions.width,
@@ -74,7 +80,7 @@ const HistoricalChart = ({ base, target, allData, dimensions }) => {
       .attr('transform', `translate(${ margin.left }, ${ margin.top })`)
 
     // DISPLAY AXES
-    let iter = Math.ceil(data.length / width * 70)
+    var iter = Math.ceil(data.length / width * 70)
     var xAxis = d3.axisBottom(x)
       .tickValues(data.filter((d, i) => i % iter === 0).map(d => d.date))
       .tickSizeOuter(0);
@@ -99,33 +105,29 @@ const HistoricalChart = ({ base, target, allData, dimensions }) => {
     var chart = plot.append('g')
 
     var path = chart.append('path')
-      .datum(data)
+      .datum(data.filter(d => d.date <= today))
       .attr('d', d3.line()
         .x(d => x(d.date))
         .y(d => y(d.rate)))
 
-    if (width / data.length > 3.5) {
-      var dots = chart.selectAll('circle')
-        .data(data)
-        .enter()
-        .append('circle')
-          .transition()
-          .attr('cx', d => x(d.date))
-          .attr('cy', d => y(d.rate))
-          .attr('r', 3);
-    } else {
-      let iter = Math.ceil(data.length / width * 4);
+    var pathPred = chart.append('path')
+      .datum(data.filter(d => d.date >= today))
+      .attr('d', d3.line()
+        .x(d => x(d.date))
+        .y(d => y(d.rate)))
+      .style('stroke-dasharray', '2, 2')
 
-      var dots = chart.selectAll('circle')
+    var iter = (width / data.length > 3.5) ? 1 : Math.ceil(data.length / width * 4)
+    var dots = chart.selectAll('circle')
         .data(data.filter((d, i) => i % iter === 0))
         .enter()
         .append('circle')
           .attr('cx', d => x(d.date))
           .attr('cy', d => y(d.rate))
-          .attr('r', 3);
-    }
+          .attr('r', 3)
+          .style('filter', d => d.date > today ? 'brightness(150%)' : '')
 
-  }, [base, target, data, dimensions, range])
+  }, [base, target, data, dimensions, range, predict, predData])
 
   const handleRangeOptionClick = (e) => {
     setRange(e.target.textContent)
@@ -134,14 +136,19 @@ const HistoricalChart = ({ base, target, allData, dimensions }) => {
   return (
     <>
       <svg id='historical-chart' ref={ ref }></svg>
-      <div className='row' style={ { marginLeft: '50px', flexWrap: 'wrap' } }>
-        <RangeOption range={ range } option='MX' handleOptionClick={ handleRangeOptionClick } />
-        <RangeOption range={ range } option='5Y' handleOptionClick={ handleRangeOptionClick } />
-        <RangeOption range={ range } option='1Y' handleOptionClick={ handleRangeOptionClick } />
-        <RangeOption range={ range } option='6M' handleOptionClick={ handleRangeOptionClick } />
-        <RangeOption range={ range } option='3M' handleOptionClick={ handleRangeOptionClick } />
-        <RangeOption range={ range } option='2M' handleOptionClick={ handleRangeOptionClick } />
-        <RangeOption range={ range } option='1M' handleOptionClick={ handleRangeOptionClick } />
+      <div className='row stretch-row' style={ { marginLeft: '50px', marginRight: '20px', flexWrap: 'wrap' } }>
+        <div className='row' style={ { flexWrap: 'wrap' } }>
+          <RangeOption range={ range } option='MX' handleOptionClick={ handleRangeOptionClick } />
+          <RangeOption range={ range } option='5Y' handleOptionClick={ handleRangeOptionClick } />
+          <RangeOption range={ range } option='1Y' handleOptionClick={ handleRangeOptionClick } />
+          <RangeOption range={ range } option='6M' handleOptionClick={ handleRangeOptionClick } />
+          <RangeOption range={ range } option='3M' handleOptionClick={ handleRangeOptionClick } />
+          <RangeOption range={ range } option='2M' handleOptionClick={ handleRangeOptionClick } />
+          <RangeOption range={ range } option='1M' handleOptionClick={ handleRangeOptionClick } />
+        </div>
+        <div>
+          <PredictButton current={ predict } handleOptionClick={ () => { setPredict(prev => !prev) } } />
+        </div>
       </div>
     </>
   )
