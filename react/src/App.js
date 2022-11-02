@@ -1,13 +1,12 @@
-import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Navigate} from 'react-router-dom'
 
-import Header from './Header'
+import Header from './components/Header'
 import MainPage from './MainPage'
 
 const App = () => {
   return (
-    <div>
+    <>
       <Header />
       <BrowserRouter>
         <Routes>
@@ -15,7 +14,7 @@ const App = () => {
           <Route path='*' element={ <Navigate to={"/"}/> } />
         </Routes>
       </BrowserRouter>
-    </div>
+    </>
   )
 }
 

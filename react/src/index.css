@@ -21,6 +21,15 @@ code {
     monospace;
 }
 
+text {
+  fill: var(--text-color);
+}
+
+path {
+  fill: none;
+  stroke: var(--secondary-color);
+}
+
 #root {
   margin-left: 200px;
   margin-right: 200px;
