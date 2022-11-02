@@ -69,46 +69,15 @@ const HistoricalChart = ({ base, target, allData, dimensions }) => {
     // REMOVE ALL CURRENT ELEMENTS IN SVG
     svg.selectAll('*').remove()
 
-    // DISPLAY LINE CHART
+    // CREATE GROUP FOR PLOT
     var plot = svg.append('g')
       .attr('transform', `translate(${ margin.left }, ${ margin.top })`)
 
-    var chart = plot.append('g')
-
-    var path = chart.append('path')
-      .datum(data)
-      .attr('d', d3.line()
-        .x(d => x(d.date))
-        .y(d => y(d.rate)))
-
-    if (width / data.length > 3.5) {
-      var dots = chart.selectAll('circle')
-        .data(data)
-        .enter()
-        .append('circle')
-          .attr('cx', d => x(d.date))
-          .attr('cy', d => y(d.rate))
-          .attr('r', 3);
-    } else {
-      let iter = data.length / width * 4;
-      console.log(iter)
-      iter = Math.ceil(iter)
-
-      var dots = chart.selectAll('circle')
-        .data(data.filter((d, i) => i % iter === 0))
-        .enter()
-        .append('circle')
-          .attr('cx', d => x(d.date))
-          .attr('cy', d => y(d.rate))
-          .attr('r', 3);
-    }
-
     // DISPLAY AXES
+    let iter = Math.ceil(data.length / width * 70)
     var xAxis = d3.axisBottom(x)
-      .tickValues(data.filter((d, i) => {
-        return i % Math.ceil(data.length / width * 70) === 0
-        })
-        .map(d => d.date))
+      .tickValues(data.filter((d, i) => i % iter === 0).map(d => d.date))
+      .tickSizeOuter(0);
     if (range[1] === 'M') {
       xAxis.tickFormat(d3.timeFormat('%d %b'))
     } else if (range[1] === 'Y') {
@@ -122,8 +91,39 @@ const HistoricalChart = ({ base, target, allData, dimensions }) => {
 
     var yAxis = d3.axisLeft(y)
       .ticks(Math.min(Math.ceil(height / 30), 7))
+      .tickSizeOuter(0);
     plot.append('g')
       .call(yAxis)
+
+    // DISPLAY LINE CHART
+    var chart = plot.append('g')
+
+    var path = chart.append('path')
+      .datum(data)
+      .attr('d', d3.line()
+        .x(d => x(d.date))
+        .y(d => y(d.rate)))
+
+    if (width / data.length > 3.5) {
+      var dots = chart.selectAll('circle')
+        .data(data)
+        .enter()
+        .append('circle')
+          .transition()
+          .attr('cx', d => x(d.date))
+          .attr('cy', d => y(d.rate))
+          .attr('r', 3);
+    } else {
+      let iter = Math.ceil(data.length / width * 4);
+
+      var dots = chart.selectAll('circle')
+        .data(data.filter((d, i) => i % iter === 0))
+        .enter()
+        .append('circle')
+          .attr('cx', d => x(d.date))
+          .attr('cy', d => y(d.rate))
+          .attr('r', 3);
+    }
 
   }, [base, target, data, dimensions, range])
 
