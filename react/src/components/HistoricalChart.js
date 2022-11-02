@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import * as d3 from 'd3'
+import d3tip from 'd3-tip'
 
 import { RangeOption, PredictButton } from './Buttons'
 
@@ -80,6 +81,20 @@ const HistoricalChart = ({ base, target, histData, predData, dimensions }) => {
     var plot = svg.append('g')
       .attr('transform', `translate(${ margin.left }, ${ margin.top })`)
 
+    // MORE INFORMATION TOOLTIP
+    var tip = d3tip()
+      .attr("class", "tip")
+      .offset([-20, 0])
+      .html(function(e, d) {
+        let content = d.date.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' }) + "<br />";
+        content += "<strong>" + d.rate + " " + target + "</strong>";
+        return content
+    })
+
+    plot.call(tip)
+
+    var focusLines = plot.append('g')
+
     // DISPLAY AXES
     var iter = Math.ceil(data.length / width * 70)
     var xAxis = d3.axisBottom(x)
@@ -119,14 +134,64 @@ const HistoricalChart = ({ base, target, histData, predData, dimensions }) => {
       .style('stroke-dasharray', '2, 2')
 
     var iter = (width / data.length > 3.5) ? 1 : Math.ceil(data.length / width * 4)
+    var radius = 3
+    if (data.length / width * 10 <= 1) {
+      radius = 5
+    } else if (data.length / width * 10 <= 2) {
+      radius = 4
+    }
     var dots = chart.selectAll('circle')
         .data(data.filter((d, i) => i % iter === 0))
         .enter()
         .append('circle')
           .attr('cx', d => x(d.date))
           .attr('cy', d => y(d.rate))
-          .attr('r', 3)
+          .attr('r', radius)
           .style('filter', d => d.date > today ? 'brightness(150%)' : '')
+            .on('mouseover', function(e, d) {
+              // INCREASE CIRCLE SIZE
+              d3.select(this)
+                .transition()
+                .duration(200)
+                .attr('r', radius * 2)
+
+              // ADD LINES TO FOCUS ON POINT
+              focusLines.append('line')
+                .attr('class', 'focus-line')
+                .attr('x1', x(d.date))
+                .attr('y1', y(d.rate))
+                .attr('x2', x(d.date))
+                .attr('y2', y(d.rate))
+                .transition()
+                .duration(500)
+                .attr('y2', height)
+              
+              focusLines.append('line')
+                .attr('class', 'focus-line')
+                .attr('x1', x(d.date))
+                .attr('y1', y(d.rate))
+                .attr('x2', x(d.date))
+                .attr('y2', y(d.rate))
+                .transition()
+                .duration(500)
+                .attr('x2', 0)
+
+              // SHOW TOOLTIP
+              tip.attr('class', 'tip animate')
+                .show(e, d, this)
+            })
+            .on('mouseout', function(e, d) {
+              d3.select(this)
+                .transition()
+                .duration(200)
+                .attr('r', radius )
+
+              focusLines.selectAll('*')
+                .remove()
+
+              tip.attr('class', 'tip')
+                .hide(e, d)
+            })
 
   }, [base, target, data, dimensions, range, predict, predData])
 
