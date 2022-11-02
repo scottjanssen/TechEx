@@ -40,8 +40,9 @@ const HistoricalChart = ({ base, target, histData, predData, dimensions }) => {
       return
     }
 
-    var today = new Date()
-    today = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    // var today = new Date()
+    // today = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    var today = new Date(2022, 9, 30)
 
     // MARGIN CONVENTION
     const totalWidth = dimensions.width,
