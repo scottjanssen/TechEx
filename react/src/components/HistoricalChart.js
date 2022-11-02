@@ -8,7 +8,6 @@ const HistoricalChart = ({ base, target, allData, dimensions }) => {
   const [data, setData] = useState('')
 
   useEffect(() => {
-    // TODO: TRIM DATASET TO JUST RANGE
     let start = new Date()
 
     switch (range) {
@@ -48,6 +47,10 @@ const HistoricalChart = ({ base, target, allData, dimensions }) => {
   }, [range, allData])
 
   useEffect(() => {
+    if (!Array.isArray(data)) {
+      return
+    }
+
     // MARGIN CONVENTION
     const totalWidth = dimensions.width,
       totalHeight = dimensions.height,
@@ -116,15 +119,25 @@ const HistoricalChart = ({ base, target, allData, dimensions }) => {
 
     // DISPLAY AXES
     var xAxis = d3.axisBottom(x)
+      .tickValues(data.filter((d, i) => {
+        return i % Math.ceil(data.length / width * 70) === 0
+        })
+        .map(d => d.date))
+    if (range.includes('M')) {
+      xAxis.tickFormat(d3.timeFormat('%d %b'))
+    } else {
+      xAxis.tickFormat(d3.timeFormat('%b \'%y'))
+    }
     plot.append('g')
       .attr('transform', `translate(0, ${height})`)
       .call(xAxis)
 
     var yAxis = d3.axisLeft(y)
+      .ticks(Math.min(Math.ceil(height / 30), 7))
     plot.append('g')
       .call(yAxis)
 
-  }, [base, target, data, dimensions])
+  }, [base, target, data, dimensions, range])
 
   const handleRangeOptionClick = (e) => {
     setRange(e.target.textContent)
