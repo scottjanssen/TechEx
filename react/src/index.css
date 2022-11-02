@@ -68,6 +68,34 @@ circle {
   font-size: 10pt;
 }
 
+.rangeOption {
+  background-color: var(--primary-color);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border-color: var(--secondary-color);
+  border-style: solid;
+  color: var(--text-color);
+  cursor: pointer;
+  transition-duration: 300ms;
+}
+
+.rangeOption:hover:not(.current) {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  filter: brightness(130%);
+  font-weight: bold;
+  transition-duration: 400ms;
+}
+
+.rangeOption.current {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  font-weight: bold;
+  padding: 0px;
+  transition-duration: 200ms;
+}
+
 @media screen and (max-width: 1024px) {
   #root {
     margin-left: 8%;

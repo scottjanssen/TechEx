@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Navigate} from 'react-router-dom'
 
 import Header from './components/Header'
+import Footer from './components/Footer'
 import MainPage from './MainPage'
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
           <Route path='*' element={ <Navigate to={"/"}/> } />
         </Routes>
       </BrowserRouter>
+      <Footer></Footer>
     </>
   )
 }
