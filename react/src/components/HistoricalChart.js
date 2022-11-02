@@ -9,7 +9,7 @@ const HistoricalChart = ({ base, target, allData }) => {
     start: '2022-10-01',
     end: '2022-10-30'
   })
-  const [data, setData] = useState(allData)
+  const [data, setData] = useState('')
 
   useEffect(() => {
     // TODO: TRIM DATASET TO JUST RANGE
@@ -26,21 +26,24 @@ const HistoricalChart = ({ base, target, allData }) => {
   }, [range, allData])
 
   useEffect(() => {
-    const totalHeight = 400,
-      totalWidth = 600,
+    // MARGIN CONVENTION
+    const totalWidth = 600,
+      totalHeight = 400,
       margin = {
-        left: 30,
+        left: 50,
         top: 20,
-        bottom: 50,
-        right: 20
+        right: 20,
+        bottom: 50
       },
-      height = totalHeight - margin.top - margin.bottom,
-      width = totalWidth - margin.left - margin.right
+      width = totalWidth - margin.left - margin.right,
+      height = totalHeight - margin.top - margin.bottom
 
+    // SELECT SVG USING REF
     var svg = d3.select(ref.current)
-    svg.attr('width', width)
-      .attr('height', height)
+    svg.attr('width', totalWidth)
+      .attr('height', totalHeight)
 
+    // SET DOMAINS AND RANGES
     var [xMin, xMax] = d3.extent(data, d => d.date)
     var x = d3.scaleTime()
       .domain([xMin, xMax])
@@ -52,16 +55,41 @@ const HistoricalChart = ({ base, target, allData }) => {
       .domain([yMin - padding, yMax + padding])
       .range([height, 0])
 
+    // REMOVE ALL CURRENT ELEMENTS IN SVG
     svg.selectAll('*').remove()
 
-    var chart = svg.append('g')
+    // DISPLAY LINE CHART
+    var plot = svg.append('g')
       .attr('transform', `translate(${ margin.left }, ${ margin.top })`)
 
-    chart.append('path')
+    var chart = plot.append('g')
+
+    var path = chart.append('path')
       .datum(data)
       .attr('d', d3.line()
         .x(d => x(d.date))
         .y(d => y(d.rate)))
+
+    var dots = chart.selectAll('circle')
+      .data(data)
+      .enter()
+      .append('circle')
+        .attr('cx', d => x(d.date))
+        .attr('cy', d => y(d.rate))
+        .attr('r', 3);
+
+    
+
+    // DISPLAY AXES
+    var xAxis = d3.axisBottom(x)
+    plot.append('g')
+      .attr('transform', `translate(0, ${height})`)
+      .call(xAxis)
+
+    var yAxis = d3.axisLeft(y)
+    plot.append('g')
+      .call(yAxis)
+
   }, [base, target, data])
 
   return (

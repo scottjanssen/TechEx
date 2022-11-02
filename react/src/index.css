@@ -21,15 +21,6 @@ code {
     monospace;
 }
 
-text {
-  fill: var(--text-color);
-}
-
-path {
-  fill: none;
-  stroke: var(--secondary-color);
-}
-
 #root {
   margin-left: 200px;
   margin-right: 200px;
@@ -55,4 +46,24 @@ path {
   font-size: 60px;
   font-weight: bold;
   letter-spacing: 20px;
+}
+
+text {
+  fill: var(--text-color);
+}
+
+
+path {
+  fill: none;
+  stroke: var(--secondary-color);
+  stroke-width: 1.5pt;
+}
+
+circle {
+  fill: none;
+  stroke: var(--secondary-color)
+}
+
+.tick text {
+  font-size: 10pt;
 }
