@@ -9,6 +9,7 @@ body {
   margin: 0;
   font-family: 'Lato', sans-serif;
   font-weight: 300;
+  font-size: 14pt;
   color: var(--text-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -26,8 +27,19 @@ code {
 }
 
 .container {
-  margin-top: 60px;
-  margin-bottom: 30px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 40px;
+}
+
+.header {
+  justify-content: space-between;
 }
 
 .title {
@@ -36,3 +48,22 @@ code {
   letter-spacing: 20px;
 }
 
+text {
+  fill: var(--text-color);
+}
+
+
+path {
+  fill: none;
+  stroke: var(--secondary-color);
+  stroke-width: 1.5pt;
+}
+
+circle {
+  fill: none;
+  stroke: var(--secondary-color)
+}
+
+.tick text {
+  font-size: 10pt;
+}
