@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 import HistoricalChart from "./components/HistoricalChart"
 
 const MainPage = () => {
@@ -66,12 +68,41 @@ const MainPage = () => {
       ['2022-10-30','1.00355']
     ];
 
+  const [dimensions, setDimensions] = useState(getDimensions())
+
+  useEffect(() => {
+    function handleWindowResize() {
+      setDimensions(getDimensions());
+    }
+
+    window.addEventListener('resize', handleWindowResize);
+  
+    return () => {
+      window.addEventListener('resize', handleWindowResize);
+    }
+  }, [])
+  
+
   return (
-    <div className='container'>
-      <p>Welcome to <strong>TechEX</strong>, your go-to currency exchange website.</p>
-      <HistoricalChart base={ base } target={ target } allData={ data } />
-    </div>
+    <>
+      <div className='container'>
+        <p style={ { textAlign: 'right' } }>
+          Welcome to <strong>TechEX</strong>, your go-to currency exchange website.
+        </p>
+      </div>
+      <div className='container'>
+        <HistoricalChart base={ base } target={ target } allData={ data } dimensions={ dimensions } />
+      </div>
+    </>
   )
 }
 
 export default MainPage
+
+const getDimensions = () => {
+  const { innerWidth } = window;
+  return {
+    width: innerWidth - 200 - 200,
+    height: (innerWidth - 200 - 200) / 2
+  }
+}

@@ -1,7 +1,9 @@
 import { useRef, useState, useEffect } from 'react'
 import * as d3 from 'd3'
 
-const HistoricalChart = ({ base, target, allData }) => {
+const HistoricalChart = ({ base, target, allData, dimensions }) => {
+  console.log(dimensions)
+
   const ref = useRef(null)
 
   const [range, setRange] = useState({
@@ -27,8 +29,8 @@ const HistoricalChart = ({ base, target, allData }) => {
 
   useEffect(() => {
     // MARGIN CONVENTION
-    const totalWidth = 600,
-      totalHeight = 400,
+    const totalWidth = dimensions.width,
+      totalHeight = dimensions.height,
       margin = {
         left: 50,
         top: 20,
@@ -90,7 +92,7 @@ const HistoricalChart = ({ base, target, allData }) => {
     plot.append('g')
       .call(yAxis)
 
-  }, [base, target, data])
+  }, [base, target, data, dimensions])
 
   return (
     <svg id='historical-chart' ref={ ref }></svg>
