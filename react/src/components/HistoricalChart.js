@@ -149,49 +149,57 @@ const HistoricalChart = ({ base, target, histData, predData, dimensions }) => {
           .attr('r', radius)
           .style('filter', d => d.date > today ? 'brightness(150%)' : '')
             .on('mouseover', function(e, d) {
-              // INCREASE CIRCLE SIZE
-              d3.select(this)
-                .transition()
-                .duration(200)
-                .attr('r', radius * 2)
-
-              // ADD LINES TO FOCUS ON POINT
-              focusLines.append('line')
-                .attr('class', 'focus-line')
-                .attr('x1', x(d.date))
-                .attr('y1', y(d.rate))
-                .attr('x2', x(d.date))
-                .attr('y2', y(d.rate))
-                .transition()
-                .duration(300)
-                .attr('y2', height)
-              
-              focusLines.append('line')
-                .attr('class', 'focus-line')
-                .attr('x1', x(d.date))
-                .attr('y1', y(d.rate))
-                .attr('x2', x(d.date))
-                .attr('y2', y(d.rate))
-                .transition()
-                .duration(300)
-                .attr('x2', 0)
-
-              // SHOW TOOLTIP
-              tip.attr('class', 'tip animate')
-                .show(e, d, this)
+              handleMouseOverPoint(e, d, this)
             })
             .on('mouseout', function(e, d) {
-              d3.select(this)
-                .transition()
-                .duration(200)
-                .attr('r', radius )
-
-              focusLines.selectAll('*')
-                .remove()
-
-              tip.attr('class', 'tip')
-                .hide(e, d)
+              handleMouseOutPoint(e, d, this)
             })
+
+      var handleMouseOverPoint = function(e, d, circle) {
+        // INCREASE CIRCLE SIZE
+        d3.select(circle)
+        .transition()
+        .duration(200)
+        .attr('r', radius * 2)
+
+        // ADD LINES TO FOCUS ON POINT
+        focusLines.append('line')
+          .attr('class', 'focus-line')
+          .attr('x1', x(d.date))
+          .attr('y1', y(d.rate))
+          .attr('x2', x(d.date))
+          .attr('y2', y(d.rate))
+          .transition()
+          .duration(300)
+          .attr('y2', height)
+        
+        focusLines.append('line')
+          .attr('class', 'focus-line')
+          .attr('x1', x(d.date))
+          .attr('y1', y(d.rate))
+          .attr('x2', x(d.date))
+          .attr('y2', y(d.rate))
+          .transition()
+          .duration(300)
+          .attr('x2', 0)
+
+        // SHOW TOOLTIP
+        tip.attr('class', 'tip animate')
+          .show(e, d, circle)
+      }
+
+      var handleMouseOutPoint = function(e, d, circle) {
+        d3.select(circle)
+          .transition()
+          .duration(200)
+          .attr('r', radius )
+
+        focusLines.selectAll('*')
+          .remove()
+
+        tip.attr('class', 'tip')
+          .hide(e, d)
+      }
 
   }, [base, target, data, dimensions, range, predict, predData])
 
