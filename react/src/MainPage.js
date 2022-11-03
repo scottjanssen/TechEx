@@ -10,15 +10,7 @@ const MainPage = () => {
     base: 'USD',
     target: 'EUR',
     histData: [],
-    predData: [
-      { date: '2022-10-31', rate: '1.013075' },
-      { date: '2022-11-01', rate: '1.005075' },
-      { date: '2022-11-02', rate: '0.992605' },
-      { date: '2022-11-03', rate: '1.00245' },
-      { date: '2022-11-03', rate: '1.006385' },
-      { date: '2022-11-05', rate: '1.00355' },
-      { date: '2022-11-06', rate: '1.00355' }
-    ]
+    predData: []
   })
 
   const [dimensions, setDimensions] = useState(getDimensions())
@@ -27,11 +19,24 @@ const MainPage = () => {
   useEffect(() => {
     d3.dsv(',', sample_data)
       .then((d) => {
-        setValues( (prevValues) => ({
-          ...prevValues,
+        setValues((prev) => ({
+          ...prev,
           histData: d,
         }))
       })
+    
+    setValues( prev => ({
+      ...prev,
+      predData: [
+        { date: '2022-10-31', rate: '1.013075' },
+        { date: '2022-11-01', rate: '1.005075' },
+        { date: '2022-11-02', rate: '0.992605' },
+        { date: '2022-11-03', rate: '1.00245' },
+        { date: '2022-11-03', rate: '1.006385' },
+        { date: '2022-11-05', rate: '1.00355' },
+        { date: '2022-11-06', rate: '1.00355' }
+      ]
+    }))
   }, [])
 
   useEffect(() => {
