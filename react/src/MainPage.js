@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import HistoricalChart from "./components/HistoricalChart"
+import Dropdown from "./components/Dropdown";
 
 const MainPage = () => {
   const base = 'USD',
@@ -85,6 +86,12 @@ const MainPage = () => {
 
   return (
     <>
+      <div className='dropdown'>
+        <Dropdown.baseDropdown/>
+        <Dropdown.baseValue/>
+        <Dropdown.targetDropdown/>
+        <Dropdown.targetValue/>
+      </div>
       <div className='container'>
         <p style={ { textAlign: 'right' } }>
           Welcome to <strong>TechEX</strong>, your go-to currency exchange website.
