@@ -2,6 +2,7 @@
   --primary-color: #353d60;
   --secondary-color: #f5756b;
   --text-color: white;
+  --overlay-color: #353d60d2;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Lato');
@@ -22,8 +23,8 @@ code {
 }
 
 #root {
-  margin-left: 200px;
-  margin-right: 200px;
+  margin-left: 12%;
+  margin-right: 12%;
 }
 
 .container {
@@ -44,7 +45,7 @@ code {
   gap: 40px;
 }
 
-.header {
+.stretch-row {
   justify-content: space-between;
 }
 
@@ -66,10 +67,135 @@ path {
 }
 
 circle {
-  fill: none;
+  fill: transparent;
   stroke: var(--secondary-color)
 }
 
 .tick text {
   font-size: 10pt;
+}
+
+.rangeOption {
+  background-color: var(--primary-color);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border-color: var(--secondary-color);
+  border-style: solid;
+  color: var(--text-color);
+  cursor: pointer;
+  transition-duration: 300ms;
+}
+
+.rangeOption:hover:not(.current) {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  filter: brightness(130%);
+  font-weight: bold;
+  transition-duration: 400ms;
+}
+
+.rangeOption.current {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  font-weight: bold;
+  padding: 0px;
+  transition-duration: 200ms;
+}
+
+.predictButton {
+  background-color: var(--primary-color);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border-color: var(--secondary-color);
+  border-style: solid;
+  color: var(--text-color);
+  cursor: pointer;
+  transition-duration: 300ms;
+}
+
+.predictButton:hover:not(.current) {
+  background-color: var(--primary-color);
+  color: var(--primary-color);
+  filter: brightness(150%);
+  font-weight: bold;
+  transition-duration: 400ms;
+}
+
+.predictButton.current {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  font-weight: bold;
+  padding: 0px;
+  transition-duration: 200ms;
+}
+
+.tip {
+  background-color: var(--overlay-color);
+  color: var(--text-color);
+  font-size: 9pt;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(.3);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.tip.animate {
+  animation: bounceIn 0.2s ease-out;
+}
+
+.focus-line {
+  stroke: var(--secondary-color);
+  stroke-width: 1px;
+  stroke-dasharray: 2, 2;
+}
+
+@media screen and (max-width: 1024px) {
+  #root {
+    margin-left: 8%;
+    margin-right: 8%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  #root {
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+
+  body {
+    font-size: 12pt;
+  }
+
+  .title {
+    font-size: 40px;
+    letter-spacing: 12px;
+  }
+
+  .row {
+    gap: 20px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .tick text {
+    font-size: 8pt;
+    letter-spacing: -0.2pt;
+  }
 }
