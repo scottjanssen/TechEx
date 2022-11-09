@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 
 import HistoricalChart from "./components/HistoricalChart"
+import { Box } from "@mui/material";
+import SumExTable from "./components/SumEx";
 
 const MainPage = () => {
   const base = 'USD',
@@ -92,6 +94,11 @@ const MainPage = () => {
       </div>
       <div className='container'>
         <HistoricalChart base={ base } target={ target } allData={ data } dimensions={ dimensions } />
+      </div>
+      <div className="sumex">
+      <Box width={800} height={300}>
+        <SumExTable/>
+      </Box>
       </div>
     </>
   )
