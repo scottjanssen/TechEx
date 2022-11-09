@@ -14,11 +14,9 @@ const Dropdown = {
         };
     return (
         <FormControl required sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="demo-simple-select-required-label">Base Currency</InputLabel>
+            <InputLabel>Base Currency</InputLabel>
             <Select
             variant="outlined"
-            labelId="base-currency-select-required-label"
-            id="base-currency"
             onChange={handleChange}
             >
             <MenuItem value="">
@@ -43,7 +41,6 @@ const Dropdown = {
       <div>
         <TextField
           required
-          id="outlined-required"
           label="Value"
           defaultValue="1"
           onChange={handleChange} 
@@ -65,8 +62,6 @@ const Dropdown = {
         <FormControl required sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id="demo-simple-select-required-label">Target Currency</InputLabel>
             <Select
-            labelId="base-currency-select-required-label"
-            id="base-currency"
             onChange={handleChange}
             >
             <MenuItem value="">
