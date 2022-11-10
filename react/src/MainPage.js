@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import * as d3 from 'd3'
 
 import HistoricalChart from "./components/HistoricalChart"
+import { Box } from "@mui/material";
+import SumExTable from "./components/SumEx";
 import BaseDropdown from "./components/BaseDropdown";
 import funcs from "./components/TextFields";
 import sample_data from './sample_data/USDtoEUR.csv'
@@ -69,6 +71,11 @@ const MainPage = () => {
       </div>
       <div className='container'>
         <HistoricalChart base={ values.base } target={ values.target } histData={ values.histData } predData={ values.predData } dimensions={ dimensions } />
+      </div>
+      <div className="sumex">
+      <Box width={800} height={300}>
+        <SumExTable/>
+      </Box>
       </div>
     </>
   )
