@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import * as d3 from 'd3'
 
 import HistoricalChart from "./components/HistoricalChart"
-import Dropdown from "./components/Dropdown";
-
+import BaseDropdown from "./components/BaseDropdown";
+import funcs from "./components/TextFields";
 import sample_data from './sample_data/USDtoEUR.csv'
+import TargetDropdown from "./components/TargetDropdown";
 
 const MainPage = () => {
   const [values, setValues] = useState({
@@ -56,10 +57,10 @@ const MainPage = () => {
   return (
     <>
       <div className='dropdown'>
-        <Dropdown.baseDropdown/>
-        <Dropdown.baseValue/>
-        <Dropdown.targetDropdown/>
-        <Dropdown.targetValue/>
+        <BaseDropdown/>
+        <funcs.baseValue/>
+        <TargetDropdown/>
+        <funcs.targetValue/>
       </div>
       <div className='container'>
         <p style={ { textAlign: 'right' } }>
