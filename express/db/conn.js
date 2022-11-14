@@ -20,6 +20,19 @@ module.exports = {
         });
     },
 
+    startFetch: function (callback) {
+        client.connect(function (err, db) {
+            // Verify we got a good "db" object
+            if (err) return callback(err);
+            _db = db.db("main");
+            _db.collection("historical").find({}).toArray(function(err, result) {
+                if (err) return callback(err);
+                //We can do stuff here
+                console.log(result);
+            });
+        });
+    },
+
     getDb: function () {
         return _db;
     },
