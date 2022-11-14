@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import * as d3 from 'd3'
-
 import HistoricalChart from "./components/HistoricalChart"
-
+import { Box } from "@mui/material";
+import SumExTable from "./components/SumEx";
+import Dropdown from "./components/Dropdown";
 import sample_data from './sample_data/USDtoEUR.csv'
+import { padding, textAlign } from "@mui/system";
 
 const MainPage = () => {
   const [values, setValues] = useState({
@@ -50,10 +52,12 @@ const MainPage = () => {
       window.addEventListener('resize', handleWindowResize);
     }
   }, [])
-  
 
   return (
     <>
+      <div className='dropdown'>
+        <Dropdown/>
+      </div>
       <div className='container'>
         <p style={ { textAlign: 'right' } }>
           USD to EUR
@@ -61,6 +65,13 @@ const MainPage = () => {
       </div>
       <div className='container'>
         <HistoricalChart base={ values.base } target={ values.target } histData={ values.histData } predData={ values.predData } dimensions={ dimensions } />
+      </div>
+      <br></br>
+      <br></br>
+      <div className="sumex">
+      <Box width={800} height={300}>
+        <SumExTable/>
+      </Box>
       </div>
     </>
   )
