@@ -5,6 +5,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { CurrencyList } from '../currencyList';
 import axios from 'axios';
 import { Button, Stack } from '@mui/material';
+import { color } from 'd3';
+import { textAlign } from '@mui/system';
 
 const currenciesArray = CurrencyList;
 export default function Dropdown() {
@@ -53,6 +55,7 @@ export default function Dropdown() {
       <div className='base'>
         <Box sx={{ minWidth: 120 }}>
           <TextField
+            SelectProps={{style: {color: 'white'}, }}
             value={base}
             onChange={handleChange}
             variant="outlined"
@@ -82,7 +85,7 @@ export default function Dropdown() {
             value={input}
             onChange= {handleChange3}
             InputLabelProps={{style: { color: '#f5756b' },}}
-            inputProps={{ style: { color: "white" } }}
+            inputProps={{ style: { color: "white", textAlign:'center'} }}
             sx={{"& .MuiOutlinedInput-root": {"& > fieldset": { borderColor: "#f5756b" },},}}
             variant="outlined"
             helperText="Please input your amount to exchange"
@@ -91,10 +94,12 @@ export default function Dropdown() {
         </Box>
       </div>
       </Stack></center>
-      <Stack direction="row" spacing={3}>
+
+      <center><Stack direction="row" spacing={1.5}>
       <div className='target'>
         <Box sx={{ minWidth: 120 }}>
           <TextField
+          SelectProps={{style: {color: 'white'}, }}
           value={target}
           onChange={handleChange2}
           variant="outlined"
@@ -110,10 +115,10 @@ export default function Dropdown() {
           </TextField>
         </Box>
       </div>
-    <div className='result'>
       <div>
         <small id='result' className='res'></small>
       </div>
+    <div className='result'>
       <Box
         component="form"
         sx={{'& .MuiTextField-root': { m: 1, width: '25ch' },}}
@@ -137,7 +142,7 @@ export default function Dropdown() {
         />
       </Box>
     </div>
-    </Stack>
+    </Stack></center>
     <Stack>
       <div className='submit'>
         <Button 

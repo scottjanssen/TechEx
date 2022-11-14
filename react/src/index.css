@@ -60,6 +60,10 @@ code {
   margin-left: 50%;
 }
 
+.sumex {
+  margin-left: 8%;
+}
+
 .row {
   display: flex;
   flex-direction: row;

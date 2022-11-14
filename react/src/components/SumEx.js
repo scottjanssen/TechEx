@@ -76,7 +76,7 @@ export default class SumExTable extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='sumex'>
         <center><Button 
         onClick={this.handleClick.bind(this)} 
         color="warning" 
