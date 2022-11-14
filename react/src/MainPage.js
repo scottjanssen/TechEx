@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import * as d3 from 'd3'
-
 import HistoricalChart from "./components/HistoricalChart"
 import { Box } from "@mui/material";
 import SumExTable from "./components/SumEx";
-import BaseDropdown from "./components/BaseDropdown";
-import funcs from "./components/TextFields";
+import Dropdown from "./components/Dropdown";
 import sample_data from './sample_data/USDtoEUR.csv'
-import TargetDropdown from "./components/TargetDropdown";
+import { padding, textAlign } from "@mui/system";
 
 const MainPage = () => {
   const [values, setValues] = useState({
@@ -54,15 +52,11 @@ const MainPage = () => {
       window.addEventListener('resize', handleWindowResize);
     }
   }, [])
-  
 
   return (
     <>
       <div className='dropdown'>
-        <BaseDropdown/>
-        <funcs.baseValue/>
-        <TargetDropdown/>
-        <funcs.targetValue/>
+        <Dropdown/>
       </div>
       <div className='container'>
         <p style={ { textAlign: 'right' } }>

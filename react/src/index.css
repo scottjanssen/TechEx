@@ -17,12 +17,6 @@ body {
   background-color: var(--primary-color);
 }
 
-.sumex {
-  justify-content: center;
-  align-items: center;
-  display: flex;
-}
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -42,10 +36,28 @@ code {
   padding-bottom: 10px;
 }
 
-.dropdown {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.base {
+  margin-top: .8%;
+  margin-left: 30%;
+}
+
+.target {
+  margin-top: .8%;
+  margin-left: 30%;
+}
+
+.value {
+  margin-top: 1%;
+}
+
+.res {
+  margin-left: 10%;
+  margin-top: 2%;
+  position: absolute;
+}
+
+.submit {
+  margin-left: 50%;
 }
 
 .row {

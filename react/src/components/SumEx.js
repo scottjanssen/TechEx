@@ -1,93 +1,107 @@
 import * as React from 'react';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+import axios from 'axios';
+import { Button } from '@mui/material';
 
-const columns = [
-  { id: 'base', label: 'Base Currency', minWidth: 170 },
-  { id: 'target', label: 'Target\u00a0Currency', minWidth: 100 },
-  { id: 'result', label: 'Result', minWidth: 170, align: 'right' },
-  { id: 'date_time',label: 'Date\u00a0and\u00a0Time', minWidth: 170, align: 'right'}
-];
+let base = localStorage.getItem("base");
+let target = localStorage.getItem("target");
+let input = localStorage.getItem("input");
+let newRate;
+if (base !== "" && target !== "" && input !== 0) {
+  try {
+    axios.get(`https://api.apilayer.com/exchangerates_data/convert?to=${base}&from=${target}&amount=${input}&apikey=mAPyiFeELrblYbZn8pNyAvtrBi0TWylx`)
+    .then(response => response.data).then(data => {
+        let rate = JSON.stringify(data);
+        newRate = rate.substring(rate.indexOf("\"rate\":") + 7, rate.indexOf("\"date\":") - 2);
+        localStorage.setItem("rate", newRate);
+    })
+  } catch (error) {
 
-function createData(base, target, result, date_time) {
-  return { base, target, result, date_time};
+  }
+}
+let rate = localStorage.getItem("rate");
+
+export default class SumExTable extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: {base, target, rate},
+      rows: []
+    }
+  }
+  clicks = 0;
+  updateTable(event) {
+    this.setState({
+      data: event.target.value
+    });
+  }
+  
+  handleClick() {
+    this.clicks++;
+    if (base !== "" && target !== "" && input !== 0 && this.clicks === 1) {
+    var rows = this.state.rows;
+  
+    rows.push(this.state.data);
+  
+    this.setState({
+      rows: [...rows]
+    });
+    this.clicks++;
+    } else if (base === "" && target === "" && (input !== 0 || input === null) && this.clicks === 1) {
+      alert("You haven't exchanged anything yet.");
+    }
+  }
+  
+  renderRows() {
+    let date = new Date();
+    return  this.state.rows.map(function(o, i) {
+      return (
+        <tr key={"item-" + i}>
+          <td>
+            <center>{base}</center>
+          </td>
+          <td>
+            <center>{target}</center>
+          </td>
+          <td>
+            <center>{rate}</center>
+          </td>
+          <td>
+            <center>{date.getMonth() + 1 + "-" + date.getDate() + "-" + date.getFullYear()}</center>
+          </td>
+        </tr>
+      );
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <center><Button 
+        onClick={this.handleClick.bind(this)} 
+        color="warning" 
+        onChange={this.updateTable.bind(this)}
+        variant="outlined"
+        >
+          Click To See Most Recent Exchange Rate
+        </Button></center>
+        <br></br>
+        <br></br>
+        <table border='solid' width={800}>
+          <thead>
+            <tr>
+              <th>Base Currency</th>
+              <th>Target Currency</th>
+              <th>Rate</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.renderRows()}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
 }
 
-let rows = [];
-
-export default function SumExTable() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow
-            sx={{
-                "& th": {
-                  color: "rgba(96, 96, 96)",
-                  backgroundColor: "#f5756b"
-                }
-              }}>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Paper>
-  );
-}
