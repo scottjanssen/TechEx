@@ -1,5 +1,6 @@
 const express = require("express");
 const fetch = require("node-fetch");
+// const tf = require("@tensorflow/tfjs")
  
 // mapRoutes is an instance of the express router.
 // We use it to define our routes.
@@ -24,8 +25,6 @@ mapRoutes.route("/convert/:to/:from/:amount").get(function (req, res) {
 });
 
 mapRoutes.route("/timeseries/:begin/:end/:base").get(function (req, res) {
-
-
     let myHeaders = new fetch.Headers();
     myHeaders.append("apikey", "IFt6YaCBh3agEYsLvFWDtZ6Sr2kWFKUG");
 
@@ -53,6 +52,19 @@ mapRoutes.route("/timeseries/:begin/:end/:base").get(function (req, res) {
         res.json(rates_array);
     });
 });
+
+mapRoutes.route("/predict/:end/:base/:target").get((req, res) => {
+    let end = req.params.end,
+        base = req.params.base,
+        target = req.params.target;
+
+    console.log(end, base, target)
+
+    res.json([{
+        date: '2022-11-17',
+        rate: '3.5'
+    }])
+})
 
 
  
