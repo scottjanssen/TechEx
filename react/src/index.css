@@ -27,9 +27,41 @@ code {
   margin-right: 12%;
 }
 
+.MuiMenuItem-root {
+  color: white;
+}
+
 .container {
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+.base {
+  margin-top: .8%;
+  margin-left: 30%;
+}
+
+.target {
+  margin-top: .8%;
+  margin-left: 30%;
+}
+
+.value {
+  margin-top: 1%;
+}
+
+.res {
+  margin-left: 10%;
+  margin-top: 2%;
+  position: absolute;
+}
+
+.submit {
+  margin-left: 50%;
+}
+
+.sumex {
+  margin-left: 8%;
 }
 
 .row {
