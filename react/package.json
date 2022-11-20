@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.3",
     "react-scripts": "5.0.1",
+    "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -44,6 +45,7 @@
     ]
   },
   "devDependencies": {
+    "cypress": "^11.1.0",
     "eslint-plugin-react-hooks": "^4.6.0"
   }
 }
