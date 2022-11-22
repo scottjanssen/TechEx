@@ -1,19 +1,17 @@
 const { MongoClient } = require("mongodb");
 const Db = process.env.ATLAS_URI;
-const client = new MongoClient(Db, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
 
 var _db;
 
 module.exports = {
     connectToServer: function (callback) {
-        client.connect(function (err, db) {
+        MongoClient.connect(Db, function(err, client) {
             // Verify we got a good "db" object
-            if (db)
+            if (client)
             {
-                _db = db.db("main");
+                _db = client.db("main");
+                // _db.collection('historical').deleteMany()
+                _db.collection('historical').createIndex({ date: 1 }, { unique: true })
                 console.log("Successfully connected to MongoDB.");
             }
             return callback(err);
