@@ -14,24 +14,24 @@ afterEach(async () => {
 
 
 describe("Convert Tests", () => {
-    test("GET /convert Euro to USD", async () => {
-        const response = await request(app).get("/convert/EUR/USD/5").send()
+    test("GET conversion for CAD to USD", async () => {
+        const response = await request(app).get("/api/get/CAD/USD/5").send()
         expect(response.statusCode).toBe(200);
     });
-    test("GET /convert USD to Euro", async () => {
-        const response = await request(app).get("/convert/USD/EURO/25").send()
+    test("GET conversion USD to Euro", async () => {
+        const response = await request(app).get("/api/get/USD/EURO/25").send()
         expect(response.statusCode).toBe(200);
     });
 
 });
 
-describe("Convert Tests", () => {
-    test("GET Historical USD 1", async () => {
-        const response = await request(app).get("/timeseries/2012-05-01/2012-05-05/USD").send()
+describe("Historical Tests", () => {
+    test("GET Historical CAD to USD", async () => {
+        const response = await request(app).get("/api/historical/CAD/USD").send()
         expect(response.statusCode).toBe(200);
     });
-    test("GET Historical USD 2", async () => {
-        const response = await request(app).get("/timeseries/2017-11-05/2017-11-08/USD").send()
+    test("GET Historical USD to CAD", async () => {
+        const response = await request(app).get("/api/historical/USD/CAD").send()
         expect(response.statusCode).toBe(200);
     });
 });

@@ -7,7 +7,7 @@ import axios from 'axios';
 import { Button, Stack } from '@mui/material';
 
 
-export default function Dropdown() {
+export default function Dropdown(props) {
 
     const currenciesArray = CurrencyList;
 
@@ -49,9 +49,10 @@ export default function Dropdown() {
                   let result = JSON.stringify(data);
                   let newResult = result.substring(result.indexOf("\"result\":") + 9, result.length - 1);
                   setResult(newResult);
-                })
+                });
+            props.getHistData();
           } catch (error) {
-                console.log(error);
+              console.log(error);
           }
       }
   }
