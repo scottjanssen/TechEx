@@ -36,6 +36,10 @@ Given the short time given to plan, design and execute this project, we've had t
 ## Requirements
 
 ### Functional
+The system should allow the user to convert an inputted amount between two different currencies.
+The system should allow the user to see a trading scenario depending on their currency of choice.
+The system should allow the user to click between different trading scenarios.
+The system should allow the user to view the exchange rate between USD and EUR currencies over a period of time.
 
 ### Non-Functional
 
@@ -65,3 +69,4 @@ Given the purpose of our application, whitebox testing is a bit more difficult. 
 | /timeseries USD 2 | This test grabs all historical conversion data for the USD from November 5th, 2017 to November 8th, 2017. If the status response is 200, the test passes. |
 
 ## UI
+The frontend portion of the TechEx application was built using React JS components from the open source react compenent library, Material UI. On the main page, the user should be able to interact with the screen using a series of dropdowns, buttons, and text fields. The dropdowns are used to select currencies to convert or for trading scenarios. The buttons are for completion of conversions or to toggle the view of various trading scenarios. The textfield is used as the amount inputted by the user to convert between currencies.  
