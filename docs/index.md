@@ -59,9 +59,9 @@ Given the purpose of our application, whitebox testing is a bit more difficult. 
 
 | Test Name | Description |
 | ----------- | ----------- |
-| /convert USD to EURO | This test performs a conversion of 5 Euros to an X amount of USD. The test checks if the status response is 200. |
-| /convert EURO to USD | This test performs a conversion of 25 USD to an X amount of Euro. If the status response is 200, the test passes. |
-| /timeseries USD 1 | This test grabs all historical conversion data for the USD from May 1st, 2012 to May 5th, 2012. If the status response is 200, the test passes. |
-| /timeseries USD 2 | This test grabs all historical conversion data for the USD from November 5th, 2017 to November 8th, 2017. If the status response is 200, the test passes. |
+| GET conversion for CAD to USD | This test performs a conversion of 5 CAD to an X amount of USD. The test checks if the status response is 200. |
+| GET conversion USD to Euro | This test performs a conversion of 25 USD to an X amount of Euro. If the status response is 200, the test passes. |
+| GET Historical CAD to USD | This test grabs all historical conversion data for the CAD to the USD. If the status response is 200, the test passes. |
+| GET Historical USD to CAD | This test grabs all historical conversion data for the USD to the CAD. If the status response is 200, the test passes. |
 
 ## UI

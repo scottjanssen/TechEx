@@ -6,16 +6,34 @@ import SumExTable from "./components/SumEx";
 import Dropdown from "./components/Dropdown";
 import sample_data from './sample_data/USDtoEUR.csv'
 import { padding, textAlign } from "@mui/system";
+import axios from "axios";
 
 const MainPage = () => {
   const [values, setValues] = useState({
-    base: 'USD',
-    target: 'EUR',
+    base: localStorage.getItem("base"),
+    target: localStorage.getItem("target"),
     histData: [],
     predData: []
   })
 
-  const [dimensions, setDimensions] = useState(getDimensions())
+  const [dimensions, setDimensions] = useState(getDimensions());
+
+    const getHistData = async () => {
+        try {
+            setValues({
+                ...values,
+                base: localStorage.getItem("base"),
+                target: localStorage.getItem("target")
+            });
+            const response = await axios.get(`http://localhost:5001/api/historical/${values.base}/${values.target}`);
+            setValues({
+                ...values,
+                histData: response.data,
+            });
+        } catch {
+
+        }
+    }
 
   // TODO: ONLY TEMPORARY, REMOVE LATER
   useEffect(() => {
@@ -51,16 +69,16 @@ const MainPage = () => {
     return () => {
       window.addEventListener('resize', handleWindowResize);
     }
-  }, [])
+  }, []);
 
   return (
     <>
       <div className='dropdown'>
-        <Dropdown />
+        <Dropdown getHistData={getHistData}/>
       </div>
       <div className='container'>
         <p style={ { textAlign: 'right' } }>
-          USD to EUR
+            {localStorage.getItem("base")} to {localStorage.getItem("target")}
         </p>
       </div>
       <div className='container'>
