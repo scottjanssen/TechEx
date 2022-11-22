@@ -1,6 +1,6 @@
 const express = require("express");
 const fetch = require("node-fetch");
-// const tf = require("@tensorflow/tfjs")
+const tf = require("@tensorflow/tfjs")
  
 // mapRoutes is an instance of the express router.
 // We use it to define our routes.
@@ -8,6 +8,8 @@ const fetch = require("node-fetch");
 const mapRoutes = express.Router();
 const dbo = require("../db/conn");
 let db_connect = dbo.getDb("main");
+
+const model = await tf.loadLayersModel("../resources/pred_model_tfjs/model.json")
 
 mapRoutes.route("/convert/:to/:from/:amount").get(function (req, res) {
 
