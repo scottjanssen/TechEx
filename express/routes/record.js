@@ -1,5 +1,6 @@
 const express = require("express");
 const fetch = require("node-fetch");
+const axios = require("axios");
 const tf = require("@tensorflow/tfjs")
  
 // mapRoutes is an instance of the express router.
@@ -7,59 +8,177 @@ const tf = require("@tensorflow/tfjs")
 // The router will be added as a middleware and will take control of requests starting with path /record.
 const mapRoutes = express();
 mapRoutes.use(express.json());
+
 const dbo = require("../db/conn");
-let db_connect = dbo.getDb("main");
+const db_connect = dbo.getDb();
 
-const model = await tf.loadLayersModel("../resources/pred_model_tfjs/model.json")
+const BASE = 'USD'
+const BEGINNING = '1999-01-01'
+const API_KEY = 'YknABlU4L9jZ3e7azGRzR71EHuvjxjuT'
 
-mapRoutes.get("/convert/:to/:from/:amount", function (req, res) {
+// const model = await tf.loadLayersModel("../resources/pred_model_tfjs/model.json")
 
-    let myHeaders = new fetch.Headers();
-    myHeaders.append("apikey", "JJXPliIH6gNEAjqcBYUvkUYl9bqyEAcH");
+const getDateStr = (date) => {
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+}
 
-    const requestOptions = {
-        method: 'GET',
-        headers: myHeaders
-    };
+const getToday = (minusT=0) => {
+    const date = new Date();
+    date.setDate(date.getDate() - minusT)
+    return getDateStr(date)
+}
 
-    let key = "JJXPliIH6gNEAjqcBYUvkUYl9bqyEAcH";
-    fetch(`https://api.apilayer.com/exchangerates_data/convert?to=${req.params.to}&from=${req.params.from}&amount=${req.params.amount}&apikey=${key}`, requestOptions).then(response => response.json()).then(result => res.json(result));
-});
+// updates the entire database to recent rates
+mapRoutes.get('/api/historical/', (req, res) => {
+    const dbConnect = dbo.getDb();
+    let today = getToday()
 
-mapRoutes.route("/timeseries/:begin/:end/:base").get(function (req, res) {
+    dbConnect.collection('historical')
+        .find()
+        .sort({ date: -1 })
+        .limit(1)
+        .toArray()
+        .then((data) => {
+            if (data.length == 0) data = [{date: BEGINNING}]
+            if (data[0].date < today) {
+                let latest = data[0].date
+                let [year, ...rest] = latest.split('-')
+
+                // console.log('not updated')
+                // console.log(latest, today)
 
 
-    let myHeaders = new fetch.Headers();
-    myHeaders.append("apikey", "JJXPliIH6gNEAjqcBYUvkUYl9bqyEAcH");
+                let i = 1
+                while (latest < today) {
+                    let next_date = (+year + i).toString() + '-' + rest.join('-')
+                    let next_latest = new Date(next_date)
+                    next_latest.setDate(next_latest.getDate() - 1)
+                    next_latest = getDateStr(next_latest)
+                    if (today < next_latest) next_latest = today
 
-    const requestOptions = {
-        method: 'GET',
-        headers: myHeaders
-    };
+                    // console.log(latest, next_latest)
 
-    let key = "JJXPliIH6gNEAjqcBYUvkUYl9bqyEAcH";
-    let result1;
-    let rates_array;
-    if (rounded_today > saved_end) {
-        let new_start = (saved_end + 86400000);
-        let ns_date = new_start.toJSON().slice(0, 10);
-        fetch(`https://api.apilayer.com/exchangerates_data/timeseries?start_date=${ns_date}&end_date=${currentDate}&base=${req.params.base}&apikey=${key}`, requestOptions).then(response => response.json()).then(async result => {
-            //One large chunk date = one call? or not?
-            rates_array = result['rates'];
-            for (let i in rates_array) {
-                let found = await db_connect.collection("historical").find({"timeseries": i}).count();
-                if (found === 0) {
-                    db_connect.collection("historical").insertOne({
-                        "timeseries": i,
-                        "rates": rates_array[i],
-                        "base": result['base'],
-                    });
+                    axios.get(`https://api.apilayer.com/exchangerates_data/timeseries?start_date=${latest}&end_date=${next_latest}&base=${BASE}&apikey=${API_KEY}`,
+                            { headers: { redirect: 'follow', apikey: API_KEY } })
+                        .then((result) => {
+                            // console.log('...fetched')
+                            let new_data = result.data.rates
+                            Object.keys(new_data).forEach((date) => {
+                                dbConnect.collection('historical').insertOne({
+                                    date: date,
+                                    ...new_data[date]
+                                })
+                            })
+                            // console.log('...uploaded')
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+
+                    latest = next_date
+                    i++
                 }
             }
-            res.json(rates_array);
-        });
+            res.json(true)
+        })
+        .catch((err) => {
+            console.log(err)
+            res.json(false)
+        })
+})
+
+// get one conversion value
+mapRoutes.get('/api/get/:base/:target/:amount/', function (req, res) {
+    const dbConnect = dbo.getDb();
+    let today = getToday()
+
+    dbConnect.collection('historical').findOne({ 'date': today })
+        .then((data) => {
+            if (data) {
+                baseRate = +data[req.params.base]
+                targetRate = +data[req.params.target]
+                res.json(targetRate / baseRate * (+req.params.amount))
+            } else {
+                axios.get('/api/historical')
+                    .then(() => {
+                        dbConnect.collection('historical').findOne({ 'date': today })
+                            .then((data) => {
+                                baseRate = +data[req.params.base]
+                                targetRate = +data[req.params.target]
+                                res.json(targetRate / baseRate * (+req.params.amount))
+                            })
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        res.json(false)
+                    })
+            }
+        })
+})
+
+// get complete historical data that exists
+mapRoutes.get('/api/historical/:base/:target/', (req, res) => {
+    const dbConnect = dbo.getDb();
+
+    let query = {}
+    query[req.params.base] = {
+        $exists: true
     }
-});
+    query[req.params.target] = {
+        $exists: true
+    }
+
+    let proj = { _id: 0, date: 1 }
+    proj[req.params.base] = 1
+    proj[req.params.target] = 1
+
+    dbConnect.collection('historical').find(query)
+        .project(proj)
+        .sort({ date: 1 })
+        .toArray()
+        .then((data) => {
+            // console.log(data.length)
+            res.json(data.map((d) => {
+                return {
+                    date: d.date,
+                    rate: (+d[req.params.target]) / (+d[req.params.base])
+                }
+            }))
+        })
+})
+
+mapRoutes.get('/api/quarter/:base/:target/', (req, res) => {
+    const dbConnect = dbo.getDb();
+    let pastQuarter = getToday(90)
+    // console.log(pastQuarter)
+
+    let query = { date: { $gt: pastQuarter } }
+    query[req.params.base] = {
+        $exists: true
+    }
+    query[req.params.target] = {
+        $exists: true
+    }
+
+    let proj = { _id: 0, date: 1 }
+    proj[req.params.base] = 1
+    proj[req.params.target] = 1
+
+
+    // console.log(proj)
+    dbConnect.collection('historical').find(query)
+        .project(proj)
+        .sort({ date: 1 })
+        .toArray()
+        .then((data) => {
+            res.json(data.map((d) => {
+                return {
+                    date: d.date,
+                    rate: (+d[req.params.target]) / (+d[req.params.base])
+                }
+            }))
+        })
+})
 
 mapRoutes.route("/predict/:end/:base/:target").get((req, res) => {
     let end = req.params.end,
