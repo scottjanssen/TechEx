@@ -56,7 +56,7 @@ const MainPage = () => {
   return (
     <>
       <div className='dropdown'>
-        <Dropdown/>
+        <Dropdown />
       </div>
       <div className='container'>
         <p style={ { textAlign: 'right' } }>

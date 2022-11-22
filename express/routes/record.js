@@ -1,5 +1,6 @@
 const express = require("express");
 const fetch = require("node-fetch");
+const tf = require("@tensorflow/tfjs")
  
 // mapRoutes is an instance of the express router.
 // We use it to define our routes.
@@ -8,6 +9,8 @@ const mapRoutes = express();
 mapRoutes.use(express.json());
 const dbo = require("../db/conn");
 let db_connect = dbo.getDb("main");
+
+const model = await tf.loadLayersModel("../resources/pred_model_tfjs/model.json")
 
 mapRoutes.get("/convert/:to/:from/:amount", function (req, res) {
 
@@ -23,24 +26,8 @@ mapRoutes.get("/convert/:to/:from/:amount", function (req, res) {
     fetch(`https://api.apilayer.com/exchangerates_data/convert?to=${req.params.to}&from=${req.params.from}&amount=${req.params.amount}&apikey=${key}`, requestOptions).then(response => response.json()).then(result => res.json(result));
 });
 
-mapRoutes.get("/timeseries/:begin/:end/:base", function (req, res) {
+mapRoutes.route("/timeseries/:begin/:end/:base").get(function (req, res) {
 
-    let db_connect = dbo.getDb("main");
-
-    let begin = new Date(req.params.begin);
-    let end = new Date(req.params.end);
-    //db_connect.collection("historical").find().sort({timeseries: -1}, function(err, cursor){});
-
-    db_connect.collection("historical").find({}).toArray(function(err, result) {
-        if (err) return callback(err);
-        const saved_result = result;
-    });
-
-    let saved_end = new Date(saved_result[saved_result.length - 1].timeseries);
-    let today = new Date();
-    let rounded_today = today - (today % 86400000);
-    let currentDate = new Date().toJSON().slice(0, 10);
-    let end_date = new Date(saved_result[saved_result.length - 1].timeseries).toJSON().slice(0, 10);
 
     let myHeaders = new fetch.Headers();
     myHeaders.append("apikey", "JJXPliIH6gNEAjqcBYUvkUYl9bqyEAcH");
@@ -73,6 +60,19 @@ mapRoutes.get("/timeseries/:begin/:end/:base", function (req, res) {
         });
     }
 });
+
+mapRoutes.route("/predict/:end/:base/:target").get((req, res) => {
+    let end = req.params.end,
+        base = req.params.base,
+        target = req.params.target;
+
+    console.log(end, base, target)
+
+    res.json([{
+        date: '2022-11-17',
+        rate: '3.5'
+    }])
+})
 
 
  
