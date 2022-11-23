@@ -13,6 +13,19 @@ app.use(express.json());
 app.use(require("./routes/record"));
 const dbo = require("./db/conn");
 
+const path = require('path')
+
+app.use(
+    "/api/ml/classify",
+    express.static(path.join(__dirname, "resources/pred_model_tfjs/model.json"))
+);
+
+app.use(
+    "/api/ml",
+    express.static(path.join(__dirname, "resources/pred_model_tfjs/"))
+);
+
+
 app.listen(port, () => {
 
     dbo.connectToServer(function (err) {

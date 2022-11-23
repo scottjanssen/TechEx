@@ -44,13 +44,13 @@ export default function Dropdown(props) {
               localStorage.setItem("base", newBase);
               localStorage.setItem("target", newTarget);
               localStorage.setItem("input", input);
-            await axios.get(`https://api.apilayer.com/exchangerates_data/convert?to=${newBase}&from=${newTarget}&amount=${input}&apikey=8oacGvTwsBjRmTHplSvNlVZKfjstcq7z`)
-                .then(response => response.data).then(data => {
-                  let result = JSON.stringify(data);
-                  let newResult = result.substring(result.indexOf("\"result\":") + 9, result.length - 1);
-                  setResult(newResult);
-                });
-            props.getHistData();
+              await axios.get(`http://localhost:5001/api/get/${newBase}/${newTarget}/${input}`)
+                  .then(response => response.data)
+                  .then(data => {
+                    // console.log(data)
+                    setResult(data);
+                  });
+              props.getHistData(newBase, newTarget);
           } catch (error) {
               console.log(error);
           }
@@ -76,7 +76,7 @@ export default function Dropdown(props) {
             helperText="Please choose a currency"
             FormHelperTextProps={{style: { color: 'white' },}}
           >
-            {currenciesArray.map(x => <MenuItem value={x} data-cy={`select-option-${x.ISO}`}>{x.symbol+ " " + x.ISO}</MenuItem>)}
+            {currenciesArray.map(x => <MenuItem key={`${x}-base`} value={x} data-cy={`select-option-${x.ISO}`}>{x.symbol+ " " + x.ISO}</MenuItem>)}
           </TextField>
         </Box>
       </div>
@@ -123,7 +123,7 @@ export default function Dropdown(props) {
           FormHelperTextProps={{style: { color: 'white' },}}
           helperText="Please choose a currency"
           >
-            {currenciesArray.map(x => <MenuItem value={x} data-cy={`select-option-${x.ISO}`}>{x.symbol+ " " + x.ISO}</MenuItem>)}
+            {currenciesArray.map(x => <MenuItem key={`${x}-target`} value={x} data-cy={`select-option-${x.ISO}`}>{x.symbol+ " " + x.ISO}</MenuItem>)}
           </TextField>
         </Box>
       </div>
