@@ -25,10 +25,6 @@ app.use(
     express.static(path.join(__dirname, "resources/pred_model_tfjs/"))
 );
 
-app.use(
-    "/api/ml/scaling",
-    express.static(path.join(__dirname, "resources/norm_factors.json"))
-);
 
 app.listen(port, () => {
 
