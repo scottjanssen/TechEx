@@ -18,46 +18,22 @@ const MainPage = () => {
 
   const [dimensions, setDimensions] = useState(getDimensions());
 
-    const getHistData = async () => {
-        try {
-            setValues({
-                ...values,
-                base: localStorage.getItem("base"),
-                target: localStorage.getItem("target")
-            });
-            const response = await axios.get(`http://localhost:5001/api/historical/${values.base}/${values.target}`);
-            setValues({
-                ...values,
-                histData: response.data,
-            });
-        } catch {
+  const getHistData = async () => {
+      try {
+          const response1 = await axios.get(`http://localhost:5001/api/historical/${values.base}/${values.target}`);
+          const response2 = await axios.get(`http://localhost:5001/api/predict/${values.base}/${values.target}`);
+          console.log('histdata', response1.data)
+          console.log('preddata', response2.data)
+          setValues({
+              base: localStorage.getItem("base"),
+              target: localStorage.getItem("target"),
+              histData: response1.data,
+              predData: response2.data
+          });
+      } catch {
 
-        }
-    }
-
-  // TODO: ONLY TEMPORARY, REMOVE LATER
-  useEffect(() => {
-    d3.dsv(',', sample_data)
-      .then((d) => {
-        setValues((prev) => ({
-          ...prev,
-          histData: d,
-        }))
-      })
-    
-    setValues( prev => ({
-      ...prev,
-      predData: [
-        { date: '2022-10-31', rate: '1.013075' },
-        { date: '2022-11-01', rate: '1.005075' },
-        { date: '2022-11-02', rate: '0.992605' },
-        { date: '2022-11-03', rate: '1.00245' },
-        { date: '2022-11-03', rate: '1.006385' },
-        { date: '2022-11-05', rate: '1.00355' },
-        { date: '2022-11-06', rate: '1.00355' }
-      ]
-    }))
-  }, [])
+      }
+  }
 
   useEffect(() => {
     function handleWindowResize() {
@@ -87,9 +63,9 @@ const MainPage = () => {
       <br></br>
       <br></br>
       <div className="sumex">
-      <Box width={800} height={300}>
+      {/* <Box width={800} height={300}>
         <SumExTable/>
-      </Box>
+      </Box> */}
       </div>
     </>
   )

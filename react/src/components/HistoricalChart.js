@@ -12,6 +12,8 @@ const HistoricalChart = ({ base, target, histData, predData, dimensions }) => {
 
   const [predict, setPredict] = useState(false)
 
+  console.log('heyp', predData)
+
   useEffect(() => {
     let start = new Date()
 
@@ -41,7 +43,10 @@ const HistoricalChart = ({ base, target, histData, predData, dimensions }) => {
       return
     }
 
-    var today = new Date(2022, 9, 30)
+    var today = new Date()
+    today.setHours(0,0,0,0);
+
+    // console.log(predData)
 
     // MARGIN CONVENTION
     const totalWidth = dimensions.width,

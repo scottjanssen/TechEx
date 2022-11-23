@@ -8,12 +8,11 @@ let input = localStorage.getItem("input");
 let newRate;
 if (base !== "" && target !== "" && input !== 0) {
   try {
-    axios.get(`https://api.apilayer.com/exchangerates_data/convert?to=${base}&from=${target}&amount=${input}&apikey=mAPyiFeELrblYbZn8pNyAvtrBi0TWylx`)
-    .then(response => response.data).then(data => {
-        let rate = JSON.stringify(data);
-        newRate = rate.substring(rate.indexOf("\"rate\":") + 7, rate.indexOf("\"date\":") - 2);
-        localStorage.setItem("rate", newRate);
-    })
+    axios.get(`http://localhost:5001/api/get/${base}/${target}/${input}`)
+      .then(response => response.data)
+      .then(data => {
+        localStorage.setItem("rate", data);
+      });
   } catch (error) {
 
   }
