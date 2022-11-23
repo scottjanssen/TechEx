@@ -49,7 +49,10 @@ The system should allow the user to view the exchange rate between USD and EUR c
 
 ### Non-Functional
 
-## Design
+## Design WIP
+We have two major parts of our design, the frontend and the backend.
+The frontend uses React components to show UI for the user to interact with and display data that they have queried for. We have one mainpage as the frontend. It allows the user to choose between two currencies and display the exchange rates over a certain amount of time with a graph. The graph also displays the predicted exchange rates using a Machine Learning algorithm.
+The backend uses Express and MongoDB to store all the exchange rate historical data through a third party API call and also runs the Machine Learning algorithm from the stored historical data.  
 
 ### Exchange Rates Prediction with Machine Learning
 In order to predict exchange rates into the future, we train a machine learning model that is able to accomplish this task both accurately and reasonably.
