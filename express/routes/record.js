@@ -93,6 +93,8 @@ mapRoutes.get('/api/get/:base/:target/:amount/', function (req, res) {
     const dbConnect = dbo.getDb();
     let today = getToday()
 
+    // console.log('yooooo', req.params)
+
     dbConnect.collection('historical').findOne({ 'date': today })
         .then((data) => {
             if (data) {
@@ -100,7 +102,7 @@ mapRoutes.get('/api/get/:base/:target/:amount/', function (req, res) {
                 targetRate = +data[req.params.target]
                 res.json(targetRate / baseRate * (+req.params.amount))
             } else {
-                localClient.get('/api/update')
+                localClient.get('/api/update/')
                     .then(() => {
                         dbConnect.collection('historical').findOne({ 'date': today })
                             .then((data) => {
@@ -123,7 +125,7 @@ mapRoutes.get('/api/historical/:base/:target/', (req, res) => {
 
     localClient.get(`/api/update/`)
         .then(() => {
-            // console.log('yo')
+            // console.log('yo', req.params)
 
             let query = {}
             query[req.params.base] = {

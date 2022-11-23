@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import * as d3 from 'd3'
 import HistoricalChart from "./components/HistoricalChart"
 import { Box } from "@mui/material";
 import Dropdown from "./components/Dropdown";
@@ -9,27 +8,13 @@ import axios from "axios";
 
 const MainPage = () => {
   const [values, setValues] = useState({
-    base: localStorage.getItem("base"),
-    target: localStorage.getItem("target"),
+    base: 'USD',
+    target: 'EUR',
     histData: [],
     predData: []
   })
 
   const [dimensions, setDimensions] = useState(getDimensions());
-
-  const getHistData = (base, target) => {axios.get(`http://localhost:5001/api/historical/${values.base}/${values.target}`)
-      .then((res1) => {
-        axios.get(`http://localhost:5001/api/predict/${values.base}/${values.target}`)
-          .then((res2) => {
-            setValues({
-              base: base,
-              target: target,
-              histData: res1.data,
-              predData: res2.data
-          })
-          })
-      })
-  }
 
   useEffect(() => {
     function handleWindowResize() {
@@ -46,11 +31,11 @@ const MainPage = () => {
   return (
     <>
       <div className='dropdown'>
-        <Dropdown getHistData={getHistData}/>
+        <Dropdown setValues={ setValues } />
       </div>
       <div className='container'>
         <p style={ { textAlign: 'right' } }>
-            {localStorage.getItem("base")} to {localStorage.getItem("target")}
+          1 {values.base} to {values.target}
         </p>
       </div>
       <div className='container'>

@@ -9,7 +9,7 @@ import { Button, Stack } from '@mui/material';
 
 export default function Dropdown(props) {
 
-    const currenciesArray = CurrencyList;
+  const currenciesArray = CurrencyList;
 
   const [base, setBase] = React.useState('');
   const handleChange = (event) => {
@@ -28,12 +28,12 @@ export default function Dropdown(props) {
 
   const [result, setResult] = React.useState('');
   
- async function fetchData(b, t, i) {
-     if(b == "" || t == "" || t== null || b == null) {
+  const fetchData = (event) => {
+     if(base == "" || target == "" || target == null || base == null) {
          setResult("Error: Cannot have null currencies");
-     } else if (i < 0){
+     } else if (input < 0){
          setResult("Error: Cannot have a negative value");
-      } else if(i == 0 || null || undefined) {
+      } else if(input == 0 || null || undefined) {
         setResult("Error: Cannot have a zero value");
       } else {
           try {
@@ -41,16 +41,27 @@ export default function Dropdown(props) {
               let newBase = base1.substring(base1.indexOf("ISO") + 6, base1.indexOf("ISO") + 9)
               let target1 = JSON.stringify(target)
               let newTarget = target1.substring(target1.indexOf("ISO") + 6, target1.indexOf("ISO") + 9)
-              localStorage.setItem("base", newBase);
-              localStorage.setItem("target", newTarget);
-              localStorage.setItem("input", input);
-              await axios.get(`http://localhost:5001/api/get/${newBase}/${newTarget}/${input}`)
+              axios.get(`http://localhost:5001/api/get/${newBase}/${newTarget}/${input}`)
                   .then(response => response.data)
                   .then(data => {
                     // console.log(data)
-                    setResult(data);
+                    axios.get(`http://localhost:5001/api/historical/${newBase}/${newTarget}`)
+                      .then((res1) => {
+                        axios.get(`http://localhost:5001/api/predict/${newBase}/${newTarget}/`)
+                          .then((res2) => {
+                            console.log('hist', res1.data)
+                            console.log('pred', res2.data)
+                            setResult(data);
+                            props.setValues({
+                              base: newBase,
+                              target: newTarget,
+                              histData: res1.data,
+                              predData: res2.data
+                          })
+                          })
+                      })
                   });
-              props.getHistData(newBase, newTarget);
+              // props.getHistData(newBase, newTarget)
           } catch (error) {
               console.log(error);
           }
@@ -160,7 +171,7 @@ export default function Dropdown(props) {
         <Button 
         variant="outlined"
         color='warning'
-        onClick={() => fetchData(base, target, input)}
+        onClick={ fetchData }
         name={'submit-button'}
         >
           Submit
