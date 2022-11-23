@@ -50,7 +50,7 @@ export default function Dropdown(props) {
                     // console.log(data)
                     setResult(data);
                   });
-              props.getHistData();
+              props.getHistData(newBase, newTarget);
           } catch (error) {
               console.log(error);
           }

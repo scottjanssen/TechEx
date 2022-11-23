@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import * as d3 from 'd3'
 import HistoricalChart from "./components/HistoricalChart"
 import { Box } from "@mui/material";
-import SumExTable from "./components/SumEx";
 import Dropdown from "./components/Dropdown";
 import sample_data from './sample_data/USDtoEUR.csv'
 import { padding, textAlign } from "@mui/system";
@@ -18,21 +17,18 @@ const MainPage = () => {
 
   const [dimensions, setDimensions] = useState(getDimensions());
 
-  const getHistData = async () => {
-      try {
-          const response1 = await axios.get(`http://localhost:5001/api/historical/${values.base}/${values.target}`);
-          const response2 = await axios.get(`http://localhost:5001/api/predict/${values.base}/${values.target}`);
-          console.log('histdata', response1.data)
-          console.log('preddata', response2.data)
-          setValues({
-              base: localStorage.getItem("base"),
-              target: localStorage.getItem("target"),
-              histData: response1.data,
-              predData: response2.data
-          });
-      } catch {
-
-      }
+  const getHistData = (base, target) => {axios.get(`http://localhost:5001/api/historical/${values.base}/${values.target}`)
+      .then((res1) => {
+        axios.get(`http://localhost:5001/api/predict/${values.base}/${values.target}`)
+          .then((res2) => {
+            setValues({
+              base: base,
+              target: target,
+              histData: res1.data,
+              predData: res2.data
+          })
+          })
+      })
   }
 
   useEffect(() => {
@@ -63,9 +59,6 @@ const MainPage = () => {
       <br></br>
       <br></br>
       <div className="sumex">
-      {/* <Box width={800} height={300}>
-        <SumExTable/>
-      </Box> */}
       </div>
     </>
   )
