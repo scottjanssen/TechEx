@@ -8,8 +8,8 @@ import axios from "axios";
 
 const MainPage = () => {
   const [values, setValues] = useState({
-    base: 'USD',
-    target: 'EUR',
+    base: '...',
+    target: '...',
     histData: [],
     predData: []
   })

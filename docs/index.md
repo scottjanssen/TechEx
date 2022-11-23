@@ -26,7 +26,13 @@ Foreign exchange trading (Forex) is already a widespread idea in the financial w
 ## Software Technologies
 To create TechEx, we decided to follow the MERN (Mongo, Express, React and Node) stack. There are several reasons why we chose this stack over our previous usage of Java and React. Firstly, all of the separate MERN technologies work exceptionally well together. It's very easy to connect a Mongo database to an Express backend, and Express integrates well with a React frontend given that they are written in the same language. The second reason for using MERN over another grouping of technologies is that the frontend and backend are both written in JavaScript. This makes it significantly easier for us as students to work efficiently in a short timeframe. Additionally, Mongo is very easy to use out of the box and provides an interactive UI to help inexperienced developers understand the workings of a basic database system. 
 
-//Balaram, add a paragraph here about the ML technologies used
+For our machine learning prediction, we used a iPython Notebook on Jupyter using Python 3.10.2.
+We used the following Python libraries for data preparation and training: NumPy, Pandas, and Tensorflow.
+We particularly used Keras provided by Tensorflow and used the in-built LSTM, Dense, and Dropout layers.
+To deploy our model, we used TensorflowJS (TF.js).
+
+To display historical data and prediction trends, we used the D3.js library to create an interactive chart with tooltips and time range functionality.
+
 
 As of writing this report, we plan on deploying our application to Google App Engine.
 
@@ -47,6 +53,78 @@ The system should allow the user to view the exchange rate between USD and EUR c
 We have two major parts of our design, the frontend and the backend.
 The frontend uses React components to show UI for the user to interact with and display data that they have queried for. We have one mainpage as the frontend. It allows the user to choose between two currencies and display the exchange rates over a certain amount of time with a graph. The graph also displays the predicted exchange rates using a Machine Learning algorithm.
 The backend uses Express and MongoDB to store all the exchange rate historical data through a third party API call and also runs the Machine Learning algorithm from the stored historical data.  
+
+### Exchange Rates Prediction with Machine Learning
+In order to predict exchange rates into the future, we train a machine learning model that is able to accomplish this task both accurately and reasonably.
+We use Recurrent Neural Networks (RNNs) for our model which are able to capture temporal features.
+We wish to predict 90 days of historic data 14 days into the future, so this would require a many-to-many RNN.
+Past research has shown the effectiveness of LSTMs (Long short-term memory units) for FOREX and stock prediction as rates are greatly influenced by their recent states and also the general patterns of the market.
+
+In order to create the training dataset, we only focus on the top 35 traded currencies, in terms of traded volume (sourced from Wikipedia).
+Using our API we then downloaded all historical data on these currencies since January 1st, 1999.
+We then computed the exchange rates between every currency (approx. 1100) over the last 23 years where we assumed transitivity as we are using daily exchange rate values.
+All the data was then normalized to a 0-1 scale using the minimum and maximum of each respective exchange rate.
+We then uniformly sampled 200,000 periods of 104 days from all the possible 104 day periods, and used that as our training set.
+We used the first 90 days as our training input and the second 14 days as our training label.
+We conducted this sampling to reduce the computation time of training, and in our tests, under samples of 50,000, 100,000, and 300,000, the model's results were similar in accuracy and loss.
+
+We used TensorFlow to create our sequential model which had the following layout.
+
+1. Input layer of size 90
+2. LSTM Layer of 64 units and a dropout of 20%
+3. LSTM Layer of 64 units and a dropout of 20%
+4. LSTM Layer of 64 units and a dropout of 20%
+5. Dense Layer of 32 units and a dropout of 40%
+6. Dense Layer of 14 units for the output
+
+We also write the code below:
+```
+model = Sequential()
+
+model.add(LSTM(units=64, return_sequences=True, input_shape=(input_timeframe, 1)))
+model.add(Dropout(0.2))
+
+model.add(LSTM(units=64, return_sequences=True))
+model.add(Dropout(0.2))
+
+model.add(LSTM(units=64))
+model.add(Dropout(0.2))
+
+model.add(Dense(units=32))
+model.add(Dropout(0.4))
+
+model.add(Dense(units=output_timeframe))
+
+model.summary()
+```
+The LSTM layers are able to capture the recurrent features and the last dense layers assemble the many-to-many output of 14 days of predicted data.
+
+We trained this model using the Adam optimizer which is a standard tool for RNNs along with the loss of Mean-Squared Error (MSE).
+As we are predicting trendlines, MSE is known to reflect the accuracy well.
+However, with many different types of patterns being trained on the same model, it can tend to train the model toward an average which is usually a flat line (the rates remain the same) rather than predicting an exciting trend.
+Although these flat lines are reasonable, they do not provide any new information; hence, we considered those results as a sign of overfitting.
+In order to limit speedy overfitting, we utilized batch training with a batch size of 2048 (approx. 100 batches).
+This then reduced the number of epochs we needed to train to only 3 before the model overfitted.
+```
+model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
+model.fit(X_train, y_train, epochs=3, batch_size=2048)
+```
+
+Our final results on testing data (data not used for training) are shown below.
+
+![plot0](../prediction/pictures/output.png)
+![plot1](../prediction/pictures/output1.png)
+![plot2](../prediction/pictures/output2.png)
+![plot3](../prediction/pictures/output3.png)
+![plot4](../prediction/pictures/output4.png)
+
+Although with more training both our training and testing loss would decrease we argue that since that only resulted in more flat-lines we were still overfitting to a theoretical average pattern (where most rates would eventually even out after some time rather than only increase or decrease).
+We neglected a case like this as our cost function of MSE is not able to codify a good model predictor according to our needs.
+With our training procedures, we received similar training and testing loss values which indicates no overfitting or underfitting as required.
+Moreover, we recognized a small bias in predicting a bear-ish trend (going down), and we suspect this to be a result of the general pattern of decreases in exchange rates lasting longer than increases.
+We deployed our model on our application using TensorflowJS.
+
+### Interactive Charts with D3
 
 ## Testing
 
