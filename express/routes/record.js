@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 const axios = require("axios");
 const tf = require("@tensorflow/tfjs")
 
-// const axios = axios.create({ baseURL: 'http://localhost:5001/' })
+const localClient = axios.create({ baseURL: 'http://localhost:5001/' })
  
 // mapRoutes is an instance of the express router.
 // We use it to define our routes.
@@ -114,7 +114,7 @@ mapRoutes.get('/api/get/:base/:target/:amount/', function (req, res) {
                 targetRate = +data[req.params.target]
                 res.json(targetRate / baseRate * (+req.params.amount))
             } else {
-                axios.get('http://localhost:5001/api/update/')
+                localClient.get('http://localhost:5001/api/update/')
                     .then(() => {
                         // console.log(response.data)
                         dbConnect.collection('historical').findOne({ 'date': today })
@@ -136,7 +136,7 @@ mapRoutes.get('/api/get/:base/:target/:amount/', function (req, res) {
 mapRoutes.get('/api/historical/:base/:target/', (req, res) => {
     const dbConnect = dbo.getDb();
 
-    axios.get(`http://localhost:5001/api/update/`)
+    localClient.get(`http://localhost:5001/api/update/`)
         .then(() => {
             // console.log('yo', req.params)
 
@@ -181,7 +181,7 @@ mapRoutes.get('/api/quarter/:base/:target/', (req, res) => {
     let pastQuarter = getToday(90)
     // console.log(pastQuarter)
 
-    axios.get(`http://localhost:5001/api/update/`)
+    localClient.get(`http://localhost:5001/api/update/`)
         .then(() => {
             let query = { date: { $gt: pastQuarter } }
             query[req.params.base] = {
@@ -220,7 +220,7 @@ mapRoutes.route('/api/scaling/:base/:target').get((req, res) => {
     let base = req.params.base,
         target = req.params.target;
 
-    axios.get(`http://localhost:5001/api/historical/${base}/${target}`)
+    localClient.get(`http://localhost:5001/api/historical/${base}/${target}`)
         .then((histData) => {
             let rates = histData.data.map(d => +d.rate)
             res.json({
@@ -234,12 +234,12 @@ mapRoutes.route("/api/predict/:base/:target").get((req, res) => {
     let base = req.params.base,
         target = req.params.target;
 
-    axios.get(`http://localhost:5001/api/scaling/${base}/${target}/`)
+    localClient.get(`http://localhost:5001/api/scaling/${base}/${target}/`)
         .then((scaling) => {
             let min = scaling.data.min,
                 max = scaling.data.max
             // console.log('scaling', min, max)
-            axios.get(`http://localhost:5001/api/quarter/${base}/${target}/`)
+            localClient.get(`http://localhost:5001/api/quarter/${base}/${target}/`)
             .then((histData) => {
                 // console.log(histData.data)
 
