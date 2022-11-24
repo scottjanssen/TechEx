@@ -6,7 +6,6 @@ import { CurrencyList } from '../currencyList';
 import axios from 'axios';
 import { Button, Stack } from '@mui/material';
 
-
 export default function Dropdown(props) {
 
   const currenciesArray = CurrencyList;
