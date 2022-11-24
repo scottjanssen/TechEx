@@ -157,7 +157,7 @@ export default function Dropdown(props) {
                         id={"result-textbox"}
                         name={'result-textbox'}
                         InputLabelProps={{style: { color: '#f5756b' },}}
-                        inputProps={{ style: { color: "white", textAlign:'center'} }}
+                        inputProps={{ style: { color: "white", textAlign:'center', webkitTextFillColor: 'white',} }}
                         sx={{"& .MuiInputBase-root.Mui-disabled": {
                             "& > fieldset": {
                                 borderColor: "#f5756b",
