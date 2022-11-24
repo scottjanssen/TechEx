@@ -41,10 +41,6 @@ const MainPage = () => {
       <div className='container'>
         <HistoricalChart base={ values.base } target={ values.target } histData={ values.histData } predData={ values.predData } dimensions={ dimensions } />
       </div>
-      <br></br>
-      <br></br>
-      <div className="sumex">
-      </div>
     </>
   )
 }
