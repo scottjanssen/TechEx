@@ -63,6 +63,8 @@ The user database is where information about all the users is permanently stored
 
 ### Low Level Design (Diagrams WIP)
 
+![plot0](/Project2_CD.drawio.jpg)
+![plot1](/Project2_SD.drawio.png)
 
 
 ### Exchange Rates Prediction with Machine Learning
