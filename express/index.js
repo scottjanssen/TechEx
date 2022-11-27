@@ -32,14 +32,14 @@ app.listen(port, () => {
         if (err) console.error(err);
     });
 
-    // dbo.reloadJSON(function (err) {
+    dbo.reloadJSON(function (err) {
+         if (err) console.error(err);
+    });
+
+    // dbo.startFetch(function (err) {
     //     if (err) console.error(err);
     // });
-/*
-    dbo.startFetch(function (err) {
-        if (err) console.error(err);
-    });
-*/
+
     console.log(`Server is running on port: ${port}`);
 });
 

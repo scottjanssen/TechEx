@@ -19,7 +19,7 @@ module.exports = {
     },
 
     reloadJSON: function (callback) {
-        client.connect(function (err, db) {
+        MongoClient.connect(Db, function(err, db) {
             // Verify we got a good "db" object
             if (err) return callback(err);
             _db = db.db("main");
@@ -44,12 +44,13 @@ module.exports = {
                 let keys_array = Object.keys(rates_array);
                 let val_array = Object.values(rates_array);
                 for (let j in keys_array) {
-                    //console.log(keys_array[j]);
-                    //console.log(val_array[j]);
-                    //console.log(raw_array[i].base);
+                    // console.log(keys_array[j]);
+                    // console.log(val_array[j]);
+                    // console.log(new Date(Object.keys(rates_array)[j]));
                     _db.collection("historical").insertOne({
-                        "timeseries": Object.keys(rates_array)[j],
+                        "date": Object.keys(rates_array)[j],
                         "rates": Object.values(rates_array)[j],
+                        "sortDate": new Date(Object.keys(rates_array)[j]),
                         "base": raw_array[i].base,
                     });
                 }
@@ -58,16 +59,22 @@ module.exports = {
     },
 
     startFetch: function (callback) {
-        client.connect(function (err, db) {
+        MongoClient.connect(Db, function(err, db) {
             // Verify we got a good "db" object
             if (err) return callback(err);
             _db = db.db("main");
-            _db.collection("historical").find().sort({timeseries: -1}, function(err, cursor){});
-            _db.collection("historical").find({}).toArray(function(err, result) {
-                if (err) return callback(err);
-                //We can do stuff here
-                console.log(result);
-            });
+            _db.collection("historical").aggregate(
+                [
+                    { $sort : { _id: 1 } }
+                ]
+            )
+
+            // _db.collection("historical").find({}).toArray(function(err, result) {
+            //     if (err) return callback(err);
+            //     //We can do stuff here
+            //     //console.log(result);
+            // });
+            // console.log("Sorted");
         });
     },
 
