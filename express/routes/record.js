@@ -15,11 +15,20 @@ const dbo = require("../db/conn");
 const db_connect = dbo.getDb();
 
 const BASE = 'USD'
-const BEGINNING = '1999-01-01'
+const BEGINNING = '1998-12-31'
 const API_KEY = 'YknABlU4L9jZ3e7azGRzR71EHuvjxjuT'
 
 const getDateStr = (date) => {
     return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+}
+
+const getDate = (dateStr, offset=0) => {
+    [y, m, d] = dateStr.split('-')
+    let date = new Date();
+    date.setFullYear(+y)
+    date.setMonth(+m - 1)
+    date.setDate(+d + offset);
+    return getDateStr(date)
 }
 
 const getToday = (minusT=0) => {
@@ -45,26 +54,25 @@ mapRoutes.get('/api/update/', (req, res) => {
                 let latest = data[0].date
                 let [year, ...rest] = latest.split('-')
 
-                // console.log('not updated')
+                console.log('not updated')
                 // console.log(latest, today)
 
 
                 let i = 1
                 while (latest < today) {
-                    let next_date = (+year + i).toString() + '-' + rest.join('-')
-                    let next_latest = new Date(next_date)
-                    next_latest.setDate(next_latest.getDate() - 1)
-                    next_latest = getDateStr(next_latest)
+                    let next_latest = (+year + i).toString() + '-' + rest.join('-')
                     if (today < next_latest) next_latest = today
 
-                    // console.log(latest, next_latest)
+                    // console.log('hi', latest, next_latest)
 
-                    axios.get(`https://api.apilayer.com/exchangerates_data/timeseries?start_date=${latest}&end_date=${next_latest}&base=${BASE}&apikey=${API_KEY}`,
+                    axios.get(`https://api.apilayer.com/exchangerates_data/timeseries?start_date=${getDate(latest, 1)}&end_date=${next_latest}&base=${BASE}&apikey=${API_KEY}`,
                             { headers: { redirect: 'follow', apikey: API_KEY } })
                         .then((result) => {
                             // console.log('...fetched')
                             let new_data = result.data.rates
+                            // console.log('brooo', new_data)
                             Object.keys(new_data).forEach((date) => {
+                                // console.log(date)
                                 dbConnect.collection('historical').insertOne({
                                     date: date,
                                     sortDate: new Date(date),
@@ -72,16 +80,20 @@ mapRoutes.get('/api/update/', (req, res) => {
                                 })
                             })
                             // console.log('...uploaded')
+                            res.json(true)
                         })
                         .catch((err) => {
+                            // console.log('hiiiiii')
                             console.log(err)
                         })
+                    // console.log(i)
 
-                    latest = next_date
+                    latest = next_latest
                     i++
                 }
+            } else {
+                res.json(false)
             }
-            res.json(true)
         })
         .catch((err) => {
             console.log(err)
@@ -103,8 +115,9 @@ mapRoutes.get('/api/get/:base/:target/:amount/', function (req, res) {
                 targetRate = +data[req.params.target]
                 res.json(targetRate / baseRate * (+req.params.amount))
             } else {
-                localClient.get('/api/update/')
+                localClient.get('http://localhost:5001/api/update/')
                     .then(() => {
+                        // console.log(response.data)
                         dbConnect.collection('historical').findOne({ 'date': today })
                             .then((data) => {
                                 baseRate = +data[req.params.base]
@@ -124,7 +137,7 @@ mapRoutes.get('/api/get/:base/:target/:amount/', function (req, res) {
 mapRoutes.get('/api/historical/:base/:target/', (req, res) => {
     const dbConnect = dbo.getDb();
 
-    localClient.get(`/api/update/`)
+    localClient.get(`http://localhost:5001/api/update/`)
         .then(() => {
             // console.log('yo', req.params)
 
@@ -169,7 +182,7 @@ mapRoutes.get('/api/quarter/:base/:target/', (req, res) => {
     let pastQuarter = getToday(90)
     // console.log(pastQuarter)
 
-    localClient.get(`/api/update/`)
+    localClient.get(`http://localhost:5001/api/update/`)
         .then(() => {
             let query = { date: { $gt: pastQuarter } }
             query[req.params.base] = {
@@ -208,7 +221,7 @@ mapRoutes.route('/api/scaling/:base/:target').get((req, res) => {
     let base = req.params.base,
         target = req.params.target;
 
-    localClient.get(`/api/historical/${base}/${target}`)
+    localClient.get(`http://localhost:5001/api/historical/${base}/${target}`)
         .then((histData) => {
             let rates = histData.data.map(d => +d.rate)
             res.json({
@@ -222,12 +235,12 @@ mapRoutes.route("/api/predict/:base/:target").get((req, res) => {
     let base = req.params.base,
         target = req.params.target;
 
-    localClient.get(`/api/scaling/${base}/${target}/`)
+    localClient.get(`http://localhost:5001/api/scaling/${base}/${target}/`)
         .then((scaling) => {
             let min = scaling.data.min,
                 max = scaling.data.max
             // console.log('scaling', min, max)
-            localClient.get(`/api/quarter/${base}/${target}/`)
+            localClient.get(`http://localhost:5001/api/quarter/${base}/${target}/`)
             .then((histData) => {
                 // console.log(histData.data)
 
