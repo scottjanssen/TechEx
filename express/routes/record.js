@@ -75,6 +75,7 @@ mapRoutes.get('/api/update/', (req, res) => {
                                 // console.log(date)
                                 dbConnect.collection('historical').insertOne({
                                     date: date,
+                                    sortDate: new Date(date),
                                     ...new_data[date]
                                 })
                             })
