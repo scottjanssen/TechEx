@@ -1,46 +1,61 @@
 # TechEx
 
-## GCP Deployment
+## GCP Deployment from master
 
-First create the JAR file of the Spring Boot Application using the following command in the directory `/spring-boot/`
+### Yarn
 
-```
-$ mvn package
-```
-
-Then change all API request URLs to use https://api-dot-location-search-361515.ue.r.appspot.com.
-
-and then build the Node.js package using the following commands in the directory `/react/`
+- First check if yarn is installed by checking the version of yarn. If not installed, globally install it
 
 ```
+$ yarn --version
+$ npm install -g yarn
+```
+
+### Build the frontend
+
+```
+$ cd ./react/
 $ npm install
-$ npm run build
+$ yarn build
 ```
 
-Then we upload the following files/directories to our Cloud Shell in our GCP Project's App Engine.
-Remember to first delete any of the files in the Cloud Shell that are already there before uploading.
+### Deploy from backend
 
-```
-/react/build/
-/react/frontend.yaml
-/spring-boot/target/LocationSearch-1.jar
-/spring-boot/src/main/appengine/backend.yaml
-```
+- Make a new directory: ./express/client/
 
-Then run the following deployment commands to deploy the application in the Cloud Shell terminal.
-First for the back-end:
+- Then we copy all the files and folders within ./react/build into ./express/client/
 
-```
-$ gcloud app deploy backend.yaml
-```
+- Then edit ./express/index.js so that the app can use static files
 
-Then the front-end:
-
+- write in line 23 of ./express/index.js
 ```
-$ gcloud app deploy frontend.yaml
+app.use(express.static('client'));
+app.get('/', (req, res) => {
+    res.send('true');
+});
 ```
 
-Now the app should be running at https://location-search-361515.ue.r.appspot.com.
+- Then deploy the full stack application on console
+
+```
+$ yarn start
+```
+
+- Check http://localhost:5001/ if everything is working. If it is, we can deploy onto GCP
+
+### Deploy on GCP
+
+- First we need to create a app.yaml file on ./express/ with line:
+
+```
+runtime: nodejs14
+```
+- Login to gcloud on console, set the project, and deploy the application with
+
+```
+gcloud app deploy
+```
+- Our current GCP address is: https://cs3300-prj2.uk.r.appspot.com/
 
 ## Local Deployment
 
