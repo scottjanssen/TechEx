@@ -32,10 +32,16 @@ app.listen(port, () => {
         if (err) console.error(err);
     });
 
-    dbo.reloadJSON(function (err) {
-         if (err) console.error(err);
-    });
-
+    // dbo.deleteAll(function (err) {
+    //     if (err) console.error(err);
+    // });
+    //
+    // dbo.getDb();
+    //
+    // dbo.reloadJSON(function (err) {
+    //      if (err) console.error(err);
+    // });
+    //
     // dbo.startFetch(function (err) {
     //     if (err) console.error(err);
     // });

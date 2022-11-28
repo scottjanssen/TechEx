@@ -18,6 +18,15 @@ module.exports = {
         });
     },
 
+    deleteAll: function (callback) {
+        MongoClient.connect(Db, function(err, db) {
+            // Verify we got a good "db" object
+            if (err) return callback(err);
+            _db = db.db("main");
+            _db.collection("historical").deleteMany ( { } );
+        });
+    },
+
     reloadJSON: function (callback) {
         MongoClient.connect(Db, function(err, db) {
             // Verify we got a good "db" object
@@ -27,7 +36,7 @@ module.exports = {
 
             const fs = require('fs');
             const path = require("path");
-            let rawdata = fs.readFileSync(path.resolve(__dirname, "E:/GitHub/CS3300/Project2/express/routes/raw_data2.json"));
+            let rawdata = fs.readFileSync(path.resolve(__dirname, "../routes/raw_data2.json"));
             let raw_array = JSON.parse(rawdata);
             let test_array = Object.keys(raw_array[0].rates);
 
@@ -65,15 +74,15 @@ module.exports = {
             _db = db.db("main");
             _db.collection("historical").aggregate(
                 [
-                    { $sort : { _id: 1 } }
+                    { $sort : { date: -1 } }
                 ]
             )
 
-            // _db.collection("historical").find({}).toArray(function(err, result) {
-            //     if (err) return callback(err);
-            //     //We can do stuff here
-            //     //console.log(result);
-            // });
+            _db.collection("historical").find({}).toArray(function(err, result) {
+                if (err) return callback(err);
+                //We can do stuff here
+                // console.log(result);
+            });
             // console.log("Sorted");
         });
     },

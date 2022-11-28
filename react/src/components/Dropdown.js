@@ -28,38 +28,39 @@ export default function Dropdown(props) {
 
   const [result, setResult] = React.useState('');
   
-  const fetchData = (event) => {
-     if(base == "" || target == "" || target == null || base == null) {
-         setResult("Error: Cannot have null currencies");
-     } else if (input < 0){
-         setResult("Error: Cannot have a negative value");
-      } else if(input == 0 || null || undefined) {
-        setResult("Error: Cannot have a zero value");
+  const fetchData = async (event) => {
+      if (base == "" || target == "" || target == null || base == null) {
+          setResult("Error: Cannot have null currencies");
+      } else if (input < 0) {
+          setResult("Error: Cannot have a negative value");
+      } else if (input == 0 || null || undefined) {
+          setResult("Error: Cannot have a zero value");
       } else {
           try {
               let base1 = JSON.stringify(base)
               let newBase = base1.substring(base1.indexOf("ISO") + 6, base1.indexOf("ISO") + 9)
               let target1 = JSON.stringify(target)
               let newTarget = target1.substring(target1.indexOf("ISO") + 6, target1.indexOf("ISO") + 9)
-              axios.get(`http://localhost:5001/api/get/${newBase}/${newTarget}/${input}`)
+              await axios.get('http://localhost:5001/api/update/')
+              await axios.get(`http://localhost:5001/api/get/${newBase}/${newTarget}/${input}`)
                   .then(response => response.data)
-                  .then(data => {
-                    // console.log(data)
-                    axios.get(`http://localhost:5001/api/historical/${newBase}/${newTarget}`)
-                      .then((res1) => {
-                        axios.get(`http://localhost:5001/api/predict/${newBase}/${newTarget}/`)
-                          .then((res2) => {
-                            console.log('hist', res1.data)
-                            console.log('pred', res2.data)
-                            setResult(data);
-                            props.setValues({
-                              base: newBase,
-                              target: newTarget,
-                              histData: res1.data,
-                              predData: res2.data
+                  .then(async data => {
+                      // console.log(data)
+                      await axios.get(`http://localhost:5001/api/historical/${newBase}/${newTarget}`)
+                          .then(async (res1) => {
+                              await axios.get(`http://localhost:5001/api/predict/${newBase}/${newTarget}/`)
+                                  .then((res2) => {
+                                      console.log('hist', res1.data)
+                                      console.log('pred', res2.data)
+                                      setResult(data);
+                                      props.setValues({
+                                          base: newBase,
+                                          target: newTarget,
+                                          histData: res1.data,
+                                          predData: res2.data
+                                      })
+                                  })
                           })
-                          })
-                      })
                   });
               // props.getHistData(newBase, newTarget)
           } catch (error) {
