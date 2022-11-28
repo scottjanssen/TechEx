@@ -63,8 +63,8 @@ The user database is where information about all the fetched exchange rates are 
 
 ### Low Level Design Diagrams
 
-![plot0](/docs/Project2_CD.drawio.jpg)
-![plot1](/docs/Project2_SD.drawio.png)
+![plot0](./Project2_CD.drawio.jpg)
+![plot1](./Project2_SD.drawio.png)
 
 
 ### Exchange Rates Prediction with Machine Learning
