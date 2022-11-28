@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/static/css/main.e9fe1b83.css",
+    "main.js": "/static/js/main.097cbe8d.js",
+    "static/js/787.f6b2eaaf.chunk.js": "/static/js/787.f6b2eaaf.chunk.js",
+    "static/media/USDtoEUR.csv": "/static/media/USDtoEUR.41f72226c601289fa7a6.csv",
+    "static/media/predict-icon-1.png": "/static/media/predict-icon-1.ee339f3a7844fff2d18d.png",
+    "static/media/predict-icon-2.png": "/static/media/predict-icon-2.190a3c3afb67e3e883db.png",
+    "static/media/predict-icon-3.png": "/static/media/predict-icon-3.3f9cbd05397028135ca6.png",
+    "static/media/icon-2.png": "/static/media/icon-2.160876f04ad746fc22d4.png",
+    "index.html": "/index.html",
+    "main.e9fe1b83.css.map": "/static/css/main.e9fe1b83.css.map",
+    "main.097cbe8d.js.map": "/static/js/main.097cbe8d.js.map",
+    "787.f6b2eaaf.chunk.js.map": "/static/js/787.f6b2eaaf.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e9fe1b83.css",
+    "static/js/main.097cbe8d.js"
+  ]
+}

@@ -25,6 +25,11 @@ app.use(
     express.static(path.join(__dirname, "resources/pred_model_tfjs/"))
 );
 
+app.use(express.static('client'));
+
+app.get('/', (req, res) => {
+    res.send('true');
+});
 
 app.listen(port, () => {
 
