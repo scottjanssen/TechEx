@@ -16,7 +16,7 @@ const db_connect = dbo.getDb();
 
 const BASE = 'USD'
 const BEGINNING = '1998-12-31'
-const API_KEY = 'YknABlU4L9jZ3e7azGRzR71EHuvjxjuT'
+const API_KEY = '56tPaXQVQ1qyaazJpd5ILx5KAFAbIAv2'//Scott's 'JJXPliIH6gNEAjqcBYUvkUYl9bqyEAcH'
 
 const getDateStr = (date) => {
     return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
@@ -47,14 +47,14 @@ mapRoutes.get('/api/update/', (req, res) => {
         .sort({ date: -1 })
         .limit(1)
         .toArray()
-        .then((data) => {
-            // console.log(data[0].date, today)
+        .then(async (data) => {
             if (data.length == 0) data = [{date: BEGINNING}]
+            // console.log(data[0].date, today)
             if (data[0].date < today) {
                 let latest = data[0].date
                 let [year, ...rest] = latest.split('-')
 
-                console.log('not updated')
+                // console.log('not updated')
                 // console.log(latest, today)
 
 
@@ -64,9 +64,9 @@ mapRoutes.get('/api/update/', (req, res) => {
                     if (today < next_latest) next_latest = today
 
                     // console.log('hi', latest, next_latest)
-
-                    axios.get(`https://api.apilayer.com/exchangerates_data/timeseries?start_date=${getDate(latest, 1)}&end_date=${next_latest}&base=${BASE}&apikey=${API_KEY}`,
-                            { headers: { redirect: 'follow', apikey: API_KEY } })
+                    // console.log(getDate(latest, 1), next_latest, BASE, API_KEY)
+                    await axios.get(`https://api.apilayer.com/exchangerates_data/timeseries?start_date=${getDate(latest, 1)}&end_date=${next_latest}&base=${BASE}&apikey=${API_KEY}`,
+                        {headers: {redirect: 'follow', apikey: API_KEY}})
                         .then((result) => {
                             // console.log('...fetched')
                             let new_data = result.data.rates
@@ -80,17 +80,16 @@ mapRoutes.get('/api/update/', (req, res) => {
                                 })
                             })
                             // console.log('...uploaded')
-                            res.json(true)
                         })
                         .catch((err) => {
                             // console.log('hiiiiii')
                             console.log(err)
                         })
                     // console.log(i)
-
                     latest = next_latest
                     i++
                 }
+                res.json(true)
             } else {
                 res.json(false)
             }
