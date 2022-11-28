@@ -48,20 +48,20 @@ The system should allow the user to click between different trading scenarios.
 The system should allow the user to view the exchange rate between USD and EUR currencies over a period of time.
 
 ### Non-Functional
-The system may allow the user to see predicted exchange rates from a machine learning algorithm
-The system may allow users fast updates of exchange rates when they are loaded from the database
+The system may allow the user to see predicted exchange rates from a machine learning algorithm.
+The system may allow users fast updates of exchange rates when they are loaded from the database.
 
 
 ## Design
-Our system can be broken down into three major components: web server, java application server, and the user database.  
+Our system can be broken down into three major components: web server, javascript application server, and the user database.  
 
-The web server is where the user solely interacts with the application. Users can perform all application actions here using a GUI, including switching different exchange rates or typing the amount of currency they want to exchange. The logistics of these actions occur in the java application server, which will be discussed next. 
+The web server is where the user solely interacts with the application. Users can perform all application actions here using a GUI, including switching different exchange rates or typing the amount of currency they want to exchange. The logistics of these actions occur in the javascript application server, which will be discussed next. 
 
-The java application server handles and verifies all requests by the user. Its position is unique in that it connects the full application together: having both access to the web server and the user database. Its main job is to move and process data between the web server and the user database. For this application, that includes processing exchange rates stored in the database, passing the exchange rates to the web server, and updating and maintaining the database to store new exchange rates per date. 
+The javascript application server handles and verifies all requests by the user. Its position is unique in that it connects the full application together: having both access to the web server and the exchange rate database. Its main job is to move and process data between the web server and the database. For this application, it includes processing exchange rates stored in the database, passing the exchange rates to the web server, and updating and maintaining the database to store new exchange rates per date. 
 
-The user database is where information about all the users is permanently stored. It fully interacts with the java application server to move data to and from the database. All our exchange rate data are stored here and can be passed back to the java application server for processing. 
+The user database is where information about all the fetched exchange rates are permanently stored. It fully interacts with the java application server to move data to and from the database. All our exchange rate data are stored here and can be passed back to the javascript application server for processing. 
 
-### Low Level Design (Diagrams WIP)
+### Low Level Design Diagrams
 
 ![plot0](/docs/Project2_CD.drawio.jpg)
 ![plot1](/docs/Project2_SD.drawio.png)
