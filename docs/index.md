@@ -125,11 +125,11 @@ model.fit(X_train, y_train, epochs=3, batch_size=2048)
 
 Our final results on testing data (data not used for training) are shown below.
 
-![plot0](../prediction/pictures/output.png)
-![plot1](../prediction/pictures/output1.png)
-![plot2](../prediction/pictures/output2.png)
-![plot3](../prediction/pictures/output3.png)
-![plot4](../prediction/pictures/output4.png)
+![plot0](./output.png)
+![plot1](./output1.png)
+![plot2](./output2.png)
+![plot3](./output3.png)
+![plot4](./output4.png)
 
 Although with more training both our training and testing loss would decrease we argue that since that only resulted in more flat-lines we were still overfitting to a theoretical average pattern (where most rates would eventually even out after some time rather than only increase or decrease).
 We neglected a case like this as our cost function of MSE is not able to codify a good model predictor according to our needs.
