@@ -137,8 +137,6 @@ With our training procedures, we received similar training and testing loss valu
 Moreover, we recognized a small bias in predicting a bear-ish trend (going down), and we suspect this to be a result of the general pattern of decreases in exchange rates lasting longer than increases.
 We deployed our model on our application using TensorflowJS.
 
-### Interactive Charts with D3
-
 ## Testing
 
 ### Blackbox Testing
