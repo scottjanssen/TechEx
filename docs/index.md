@@ -162,3 +162,5 @@ Given the purpose of our application, whitebox testing is a bit more difficult. 
 
 ## UI
 The frontend portion of the TechEx application was built using React JS components from the open source react compenent library, Material UI. On the main page, the user should be able to interact with the screen using a series of dropdowns, buttons, and text fields. The dropdowns are used to select currencies to convert or for trading scenarios. The buttons are for completion of conversions or to toggle the view of various trading scenarios. The textfield is used as the amount inputted by the user to convert between currencies.  
+![plot0](./app.png)
+![plot1](./app2.png)
