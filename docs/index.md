@@ -23,6 +23,8 @@ Foreign exchange trading (Forex) is already a widespread idea in the financial w
 
 [Oanda Metatrader 4](https://www.oanda.com/us-en/trading/platforms/metatrader-4/) is the platform we found. It includes the ability to build trading algorithms, backtest your trading strategies and use existing algorithms to make a profit. While our implementation will not surpass this professional product, it certaintly will be a prime learning opportunity, which is all we can ask for a students.
 
+However, a basic application is provided by Google Finance which has similar UI for historical charts ([ex](https://www.google.com/finance/quote/USD-EUR?sa=X&ved=2ahUKEwivjerht9T7AhWwRjABHR-2Ac8QmY0JegQIBhAc)). We argue our implementation as a cleaner lightweight solutions for users. Furthermore, our prediction model is our selling point as it is able to educate users on possible future trends.
+
 ## Software Technologies
 To create TechEx, we decided to follow the MERN (Mongo, Express, React and Node) stack. There are several reasons why we chose this stack over our previous usage of Java and React. Firstly, all of the separate MERN technologies work exceptionally well together. It's very easy to connect a Mongo database to an Express backend, and Express integrates well with a React frontend given that they are written in the same language. The second reason for using MERN over another grouping of technologies is that the frontend and backend are both written in JavaScript. This makes it significantly easier for us as students to work efficiently in a short timeframe. Additionally, Mongo is very easy to use out of the box and provides an interactive UI to help inexperienced developers understand the workings of a basic database system. 
 
