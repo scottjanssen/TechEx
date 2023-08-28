@@ -1,6 +1,6 @@
 # TechEx
 
-https://scottjanssen.github.io/CS3300-Project2-Team1/
+https://scottjanssen.github.io/TechEx/
 
 ## GCP Deployment from master
 
