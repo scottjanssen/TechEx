@@ -1,5 +1,7 @@
 # TechEx
 
+https://scottjanssen.github.io/CS3300-Project2-Team1/
+
 ## GCP Deployment from master
 
 ### Yarn
